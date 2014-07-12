@@ -1,6 +1,8 @@
 package com.pseuco.project;
 
 public class Action {
+	
+	public static final Action INTERNAL = new Action("τ");
 
     private final String name;
 
