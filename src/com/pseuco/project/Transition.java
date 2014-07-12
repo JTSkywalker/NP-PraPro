@@ -11,6 +11,18 @@ public class Transition {
 		this.label = label;
 		this.target = target;
 	}
+	
+	public State getSource() {
+		return source;
+	}
+	
+	public Action getLabel() {
+		return label;
+	}
+	
+	public State getTarget() {
+		return target;
+	}
 
 	public boolean equals(Object obj) {
 		if (obj == null) {
