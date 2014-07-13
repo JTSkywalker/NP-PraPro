@@ -1,6 +1,9 @@
 package com.pseuco.project;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 public class LtsMinimizer {
 	public Lts minimize(Lts lts) {
@@ -11,9 +14,21 @@ public class LtsMinimizer {
 
 	private Lts calculateWeakLts(Lts lts) {
 		//Step 1
-		Lts tauLts;
+		Lts taults = lts.transTauClosure();
 		//Step 2
-
+		Collection<Transition> trans = new LinkedList<>();
+		for(State s : taults.getStates()) {//TODO concurrency
+			Collection<State> postT1 = taults.postTau(s);
+			for(State t : postT1) {
+				Collection<Transition> postA = taults.outTransitions(t);
+				for(Transition a : postA) {
+					Collection<State> postT2 = taults.postTau(a.getTarget());
+					for(State u : postT2) {
+						trans.add(new Transition(s,a.getLabel(),u));
+					}
+				}
+			}
+		}
     	throw new UnsupportedOperationException();
 	}
 
