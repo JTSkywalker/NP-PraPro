@@ -19,7 +19,7 @@ import com.pseuco.project.Transition;
 public class LtsTest {
 	
 	State s1, s2, s3;
-	Action a1, a2;
+	Action a1;
 	private Lts ltsA;
 
 	@Before
@@ -42,7 +42,7 @@ public class LtsTest {
         Transition t2 = new Transition(s2, a1, s3);
         transitions.add(t2);
 
-        ltsA = new Lts(states, actions, transitions);
+        ltsA = new Lts(states, actions, transitions, s1);
 	}
 
 	@Test
