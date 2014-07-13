@@ -2,29 +2,18 @@ package com.pseuco.project;
 
 public class Transition {
 
-	private State source;
-	private Action label;
-	private State target;
+	private final State source;
+	private final Action label;
+	private final State target;
 
 	public Transition(final State source, final Action label, final State target) {
 		this.source = source;
 		this.label = label;
 		this.target = target;
 	}
-	
-	public State getSource() {
-		return source;
-	}
-	
-	public Action getLabel() {
-		return label;
-	}
-	
-	public State getTarget() {
-		return target;
-	}
 
-	public boolean equals(Object obj) {
+	@Override
+	public boolean equals(final Object obj) {
 		if (obj == null) {
 			return false;
 		}
@@ -32,7 +21,7 @@ public class Transition {
 			return true;
 		}
 		if (obj.getClass() == getClass()) {
-			Transition t = (Transition) obj;
+			final Transition t = (Transition) obj;
 			if (source.equals(t.source) && label.equals(t.label)
 					&& target.equals(t.target)) {
 				return true;
@@ -41,15 +30,29 @@ public class Transition {
 		return false;
 	}
 
+	public Action getLabel() {
+		return label;
+	}
+
+	public State getSource() {
+		return source;
+	}
+
+	public State getTarget() {
+		return target;
+	}
+
+	@Override
 	public int hashCode() {
 		int hash = 17;
-		int multi = 31;
+		final int multi = 31;
 		hash += source.hashCode();
 		hash = hash * multi + label.hashCode();
 		hash = hash * multi + target.hashCode();
 		return hash;
 	}
 
+	@Override
 	public String toString() {
 		return String.format("(%s, %s, %s)", source.toString(),
 				label.toString(), target.toString());

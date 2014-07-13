@@ -4,11 +4,12 @@ public class State {
 
     private final String name;
 
-    public State(String name) {
+    public State(final String name) {
         this.name = name;
     }
 
-    public boolean equals(Object obj) {
+    @Override
+	public boolean equals(final Object obj) {
         if (obj == null) {
             return false;
         }
@@ -16,7 +17,7 @@ public class State {
             return true;
         }
         if (obj.getClass() == getClass()) {
-            State s = (State) obj;
+            final State s = (State) obj;
             if (name.equals(s.name)) {
                 return true;
             }
@@ -24,11 +25,13 @@ public class State {
         return false;
     }
 
-    public int hashCode() {
+    @Override
+	public int hashCode() {
         return name.hashCode();
     }
 
-    public String toString() {
+    @Override
+	public String toString() {
         return name;
     }
 
