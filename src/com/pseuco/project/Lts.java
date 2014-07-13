@@ -47,23 +47,16 @@ public class Lts {
 		}
 	}
 
-    public List<State> post(State source) {
-    	throw new UnsupportedOperationException();
-    }
-
-    public List<State> pre(State source) {
-    	throw new UnsupportedOperationException();
-    }
     /**
      * returns only tau-posts, and itself
      * @param source
      * @return
      */
-    public List<State> postTau(State source) {
+    public Collection<State> postTau(State source) {
     	throw new UnsupportedOperationException();
     }
 
-    public List<State> preTau(State source) {
+    public Collection<State> preTau(State source) {
     	throw new UnsupportedOperationException();
     }
 

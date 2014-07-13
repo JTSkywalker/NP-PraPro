@@ -1,6 +1,8 @@
 package com.pseuco.project;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 public class LtsMinimizer {
@@ -14,13 +16,13 @@ public class LtsMinimizer {
 		//Step 1
 		Lts taults = lts.transTauClosure();
 		//Step 2
-		List<Transition> trans = new ArrayList<>();
+		Collection<Transition> trans = new LinkedList<>();
 		for(State s : taults.getStates()) {//TODO concurrency
-			List<State> postT1 = taults.postTau(s);
+			Collection<State> postT1 = taults.postTau(s);
 			for(State t : postT1) {
-				List<Transition> postA = taults.post(t);
+				Collection<Transition> postA = taults.outTransitions(t);
 				for(Transition a : postA) {
-					List<State> postT2 = taults.postTau(a.getTarget());
+					Collection<State> postT2 = taults.postTau(a.getTarget());
 					for(State u : postT2) {
 						trans.add(new Transition(s,a.getLabel(),u));
 					}
