@@ -6,12 +6,12 @@ public class LtsMinimizer {
 		Partition partition = calculatePartition(weakLts);
 		return calculateMinimal(lts, weakLts, partition);
 	}
-	
+
 	private Lts calculateWeakLts(Lts lts) {
 		//Step 1
 		Lts tauLts;
 		//Step 2
-		
+
     	throw new UnsupportedOperationException();
 	}
 
@@ -19,11 +19,10 @@ public class LtsMinimizer {
     	final Bisimulation b = new Bisimulation(lts);
     	return b.calculateCoarsestPartition();
 	}
-	
+
 	private Lts calculateMinimal(final Lts strongLts, final Lts weakLts,
 			final Partition partition) {
-		ObservationalCongruentCondensation c = new ObservationalCongruentCondensation(
-				strongLts, weakLts, partition);
+		BisimilarCondensation c = new BisimilarCondensation(weakLts, partition);
     	return c.calculate();
 	}
 

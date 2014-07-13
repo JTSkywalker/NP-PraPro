@@ -6,9 +6,9 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 
-public class ObservationalCongruentCondensation {
+public class BisimilarCondensation {
 
-	private final Lts weakLts, strongLts;
+	private final Lts weakLts;
 	private final Partition partition;
 	private int stateCounter = 0;
 	private final Map<Collection<State>, State> blockToStateMap =
@@ -17,9 +17,7 @@ public class ObservationalCongruentCondensation {
 	private final Collection<Transition> transitions =
 			new HashSet<Transition>();
 
-	public ObservationalCongruentCondensation(final Lts strongLts,
-			final Lts weakLts, final Partition partition) {
-		this.strongLts = strongLts;
+	public BisimilarCondensation(final Lts weakLts, final Partition partition) {
 		this.weakLts = weakLts;
 		this.partition = partition;
 	}
@@ -29,16 +27,8 @@ public class ObservationalCongruentCondensation {
 		final Collection<State> initialBlock =
 				partition.getContainingBlock(originalInitialState);
 		explore(initialBlock);
-		final State initialState = blockToStateMap.get(initialBlock);
-		for (final State s : strongLts.post(originalInitialState, Action.INTERNAL)) {
-			if (partition.getContainingBlock(s) == initialBlock) {
-				transitions.add(new Transition(initialState, Action.INTERNAL,
-						initialState));
-				break;
-			}
-		}
 		return new Lts(states, weakLts.getActions(), transitions,
-				initialState);
+				blockToStateMap.get(initialBlock));
 	}
 
 	private void explore(final Collection<State> block) {
