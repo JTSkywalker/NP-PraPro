@@ -1,5 +1,7 @@
 package com.pseuco.project;
 
+import java.util.Collection;
+
 public class LtsMinimizer {
 	public Lts minimize(Lts lts) {
 		Lts weakLts = calculateWeakLts(lts);
@@ -17,13 +19,24 @@ public class LtsMinimizer {
 
 	private Partition calculatePartition(final Lts lts) {
     	final Bisimulation b = new Bisimulation(lts);
-    	return b.calculateCoarsestPartition();
+    	return b.getCoarsestPartition();
 	}
 
 	private Lts calculateMinimal(final Lts strongLts, final Lts weakLts,
 			final Partition partition) {
-		BisimilarCondensation c = new BisimilarCondensation(weakLts, partition);
-    	return c.calculate();
+		Lts minLts = (new RedundantTransitionRemoval(new BisimilarCondensation(
+				weakLts, partition).calculate())).getMinimum();
+		State initialState = strongLts.getInitialState();
+		Collection<State> initialBlock = partition
+				.getContainingBlock(initialState);
+		for (State s : strongLts.post(initialState, Action.INTERNAL)) {
+			if (partition.getContainingBlock(s).equals(initialBlock)) {
+				minLts.addTransition(new Transition(minLts.getInitialState(),
+						Action.INTERNAL, minLts.getInitialState()));
+				break;
+			}
+		}
+		return minLts;
 	}
 
 }

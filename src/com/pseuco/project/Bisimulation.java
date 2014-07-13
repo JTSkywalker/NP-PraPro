@@ -102,16 +102,13 @@ public class Bisimulation {
 	private final Condition taskCountChanged = taskCountLock.newCondition();
 	private final ConcurrentHashMap<Collection<State>, Boolean> splitBlocks =
 			new ConcurrentHashMap<Collection<State>, Boolean>();
+	private final Partition partition;
 
 	private final Lts lts;
 
 	public Bisimulation(final Lts lts) {
 		this.lts = lts;
 		executor = Executors.newFixedThreadPool(NUM_THREADS);
-	}
-
-	public Partition calculateCoarsestPartition() {
-		splitBlocks.clear();
 
 		out = new LinkedBlockingQueue<Collection<State>>();
 		out.add(lts.getStates());
@@ -132,7 +129,13 @@ public class Bisimulation {
 			taskCountLock.unlock();
 		}
 
-		return outputAsPartition();
+		executor.shutdown();
+
+		this.partition = outputAsPartition();
+	}
+
+	public Partition getCoarsestPartition() {
+		return this.partition;
 	}
 
 	private void launchSplitJobsOnBlock(final Collection<State> targetBlock) {
