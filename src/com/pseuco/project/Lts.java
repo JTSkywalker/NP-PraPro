@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -27,7 +28,7 @@ public class Lts {
 		this.actions = actions;
 		this.transitions = transitions;
 		this.initialState = initialState;
-		
+
 		for (State s : states) {
 			Map<Action, Set<State>> outMap = new HashMap<Action, Set<State>>();
 			Map<Action, Set<State>> inMap = new HashMap<Action, Set<State>>();
@@ -46,14 +47,38 @@ public class Lts {
 		}
 	}
 
+    public List<State> post(State source) {
+    	throw new UnsupportedOperationException();
+    }
+
+    public List<State> pre(State source) {
+    	throw new UnsupportedOperationException();
+    }
+    /**
+     * returns only tau-posts, and itself
+     * @param source
+     * @return
+     */
+    public List<State> postTau(State source) {
+    	throw new UnsupportedOperationException();
+    }
+
+    public List<State> preTau(State source) {
+    	throw new UnsupportedOperationException();
+    }
+
+    public Lts transTauClosure() {
+    	throw new UnsupportedOperationException();
+    }
+
 	public Collection<State> getStates() {
 		return states;
 	}
-	
+
 	public Collection<Action> getActions() {
 		return actions;
 	}
-	
+
 	public State getInitialState() {
 		return initialState;
 	}
@@ -61,7 +86,7 @@ public class Lts {
 	public Set<State> post(final State source, final Action a) {
 		return postMap.get(source).get(a);
 	}
-	
+
 	public Set<State> post(final Collection<State> sources, final Action a) {
 		Set<State> result = new HashSet<State>();
 		for (State s : sources) {
@@ -73,7 +98,7 @@ public class Lts {
 	public Set<State> pre(final State target, final Action a) {
 		return preMap.get(target).get(a);
 	}
-	
+
 	public Set<State> pre(final Collection<State> targets, final Action a) {
 		Set<State> result = new HashSet<State>();
 		for (State s : targets) {

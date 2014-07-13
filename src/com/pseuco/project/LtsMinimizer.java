@@ -8,6 +8,10 @@ public class LtsMinimizer {
 	}
 	
 	private Lts calculateWeakLts(Lts lts) {
+		//Step 1
+		Lts tauLts;
+		//Step 2
+		
     	throw new UnsupportedOperationException();
 	}
 
