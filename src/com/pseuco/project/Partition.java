@@ -6,20 +6,20 @@ import java.util.Map;
 
 public class Partition {
 
-	private final Collection<Collection<State>> blocks;
-	private final Map<State, Collection<State>> stateToBlockMap =
-			new HashMap<State, Collection<State>>();
+	private final Collection<Block> blocks;
+	private final Map<State, Block> stateToBlockMap =
+			new HashMap<State, Block>();
 
-	public Partition(final Collection<Collection<State>> blocks) {
+	public Partition(final Collection<Block> blocks) {
 		this.blocks = blocks;
-		for (final Collection<State> b : blocks) {
-			for (final State s : b) {
+		for (final Block b : blocks) {
+			for (final State s : b.getStates()) {
 				stateToBlockMap.put(s, b);
 			}
 		}
 	}
 
-	public Collection<State> getContainingBlock(final State s) {
+	public Block getContainingBlock(final State s) {
 		return stateToBlockMap.get(s);
 	}
 

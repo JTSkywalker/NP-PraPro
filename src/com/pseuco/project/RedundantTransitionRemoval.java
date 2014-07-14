@@ -1,8 +1,6 @@
 package com.pseuco.project;
 
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 public class RedundantTransitionRemoval {
 
@@ -31,18 +29,18 @@ public class RedundantTransitionRemoval {
 			return paths.getLength(t.getSource(), t.getTarget()) > 1;
 		} else {
 			State s1 = t.getSource();
-			Set<State> set = new HashSet<State>();
-			set.addAll(newLts.post(s1, t.getLabel()));
-			for (State s2 : oldLts.post(s1, Action.INTERNAL)) {
-				set.addAll(newLts.post(s2, t.getLabel()));
-			}
-
-			for (State s3 : set) {
-				if (s3.equals(t.getTarget())) {
+			for (State s2 : newLts.post(s1, t.getLabel())) {
+				if (s2.equals(t.getTarget())
+						|| oldLts.post(s2, Action.INTERNAL).contains(
+								t.getTarget())) {
 					return true;
 				}
-				for (State s4 : oldLts.post(s3, Action.INTERNAL)) {
-					if (s4.equals(t.getTarget())) {
+			}
+			for (State s2 : oldLts.post(s1, Action.INTERNAL)) {
+				for (State s3 : newLts.post(s2, t.getLabel())) {
+					if (s3.equals(t.getTarget())
+							|| oldLts.post(s3, Action.INTERNAL).contains(
+									t.getTarget())) {
 						return true;
 					}
 				}

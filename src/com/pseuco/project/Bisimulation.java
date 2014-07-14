@@ -1,7 +1,6 @@
 package com.pseuco.project;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
@@ -16,10 +15,10 @@ public class Bisimulation {
 
 	private class SplitTask implements Runnable {
 
-		final Collection<State> targetBlock;
+		final Block targetBlock;
 		final Action action;
 
-		SplitTask(final Collection<State> targetBlock, final Action action) {
+		SplitTask(final Block targetBlock, final Action action) {
 			this.targetBlock = targetBlock;
 			this.action = action;
 		}
@@ -27,9 +26,9 @@ public class Bisimulation {
 		@Override
 		public void run() {
 			if (!splitBlocks.containsKey(targetBlock)) {
-				final BlockingQueue<Collection<State>> myIn;
-				final BlockingQueue<Collection<State>> myOut =
-						new LinkedBlockingQueue<Collection<State>>();
+				final BlockingQueue<Block> myIn;
+				final BlockingQueue<Block> myOut =
+						new LinkedBlockingQueue<Block>();
 				outLock.lock();
 				try {
 					myIn = out;
@@ -38,8 +37,9 @@ public class Bisimulation {
 					outLock.unlock();
 				}
 
-				final Set<State> splitter = lts.pre(targetBlock, action);
-				Collection<State> block;
+				final Set<State> splitter = lts.pre(targetBlock.getStates(),
+						action);
+				Block block;
 				try {
 					while ((block = myIn.take()) != MARKER) {
 						split(block, splitter, myOut);
@@ -57,12 +57,12 @@ public class Bisimulation {
 			}
 		}
 
-		private void split(final Collection<State> block,
+		private void split(final Block block,
 				final Set<State> splitter,
-				final BlockingQueue<Collection<State>> out) throws InterruptedException {
-			final Collection<State> subBlock1 = new LinkedList<State>();
-			final Collection<State> subBlock2 = new LinkedList<State>();
-			for (final State s : block) {
+				final BlockingQueue<Block> out) throws InterruptedException {
+			final Block subBlock1 = new Block();
+			final Block subBlock2 = new Block();
+			for (final State s : block.getStates()) {
 				if (splitter.contains(s)) {
 					subBlock1.add(s);
 				} else {
@@ -85,15 +85,15 @@ public class Bisimulation {
 		START, TERMINATION
 	}
 
-	private final Collection<State> MARKER = Collections.<State> emptyList();
+	private final Block MARKER = Block.EMPTY;
 	private final int NUM_THREADS = Runtime.getRuntime().availableProcessors();
 	private final ExecutorService executor;
-	private BlockingQueue<Collection<State>> out;
+	private BlockingQueue<Block> out;
 	private final Lock outLock = new ReentrantLock();
 	private final BlockingQueue<Event> eventQueue =
 			new LinkedBlockingQueue<Event>();
-	private final ConcurrentHashMap<Collection<State>, Boolean> splitBlocks =
-			new ConcurrentHashMap<Collection<State>, Boolean>();
+	private final ConcurrentHashMap<Block, Boolean> splitBlocks =
+			new ConcurrentHashMap<Block, Boolean>();
 	private final Partition partition;
 
 	private final Lts lts;
@@ -101,14 +101,14 @@ public class Bisimulation {
 	public Bisimulation(final Lts lts) throws InterruptedException {
 		this.lts = lts;
 
-		out = new LinkedBlockingQueue<Collection<State>>();
-		out.add(lts.getStates());
+		out = new LinkedBlockingQueue<Block>();
+		out.add(new Block(lts.getStates()));
 		out.add(MARKER);
 
 		executor = Executors.newFixedThreadPool(NUM_THREADS);
 
 		try {
-			launchSplitJobsOnBlock(lts.getStates());
+			launchSplitJobsOnBlock(new Block(lts.getStates()));
 
 			int activeTaskCount = 0;
 			while (activeTaskCount > 0 || !eventQueue.isEmpty()) {
@@ -132,13 +132,14 @@ public class Bisimulation {
 		return this.partition;
 	}
 
-	private void launchSplitJobsOnBlock(final Collection<State> targetBlock) throws InterruptedException {
+	private void launchSplitJobsOnBlock(final Block targetBlock)
+			throws InterruptedException {
 		for (final Action a : lts.getActions()) {
 			launchSplitJobWithAction(targetBlock, a);
 		}
 	}
 
-	private void launchSplitJobWithAction(final Collection<State> targetBlock,
+	private void launchSplitJobWithAction(final Block targetBlock,
 			final Action action) throws InterruptedException {
 		eventQueue.put(Event.START);
 		final Runnable task = new SplitTask(targetBlock, action);
@@ -146,9 +147,8 @@ public class Bisimulation {
 	}
 
 	private Partition outputAsPartition() {
-		final Collection<Collection<State>> blocks =
-				new LinkedList<Collection<State>>();
-		Collection<State> block;
+		final Collection<Block> blocks = new LinkedList<Block>();
+		Block block;
 		try {
 			while ((block = out.take()) != MARKER) {
 				blocks.add(block);
