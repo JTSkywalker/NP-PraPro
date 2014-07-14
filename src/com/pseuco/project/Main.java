@@ -53,7 +53,7 @@ public class Main {
 				// This property is optional, so it might not exists.
 				// You can ignore it for the project.
 				// However, if you are adventurous, you can keep it
-				// and add some helpful detailsLabels to the transitions in your output 
+				// and add some helpful detailsLabels to the transitions in your output
 				String detailsLabel = null;
 				try {
 					detailsLabel = transition.getString("detailsLabel");
@@ -76,20 +76,20 @@ public class Main {
 		}
 	}
 
-	
+
 	/**
 	 * Demonstrates how to serialize a LTS.
 	 * Builds a JSON representation of a hardcoded transition system.
-	 * 
+	 *
 	 * @return the JSON representation
 	 */
 	public static JsonObject ltsSerializationDemo() {
 		// we'll try to construct this LTS:
-		// 
+		//
 		//   -------τ-------\
 		//  /                v
 		// 1 --a--> 2 --τ--> 3
-		
+
 		JsonObject statesObject = Json.createObjectBuilder()
 				.add("1", Json.createObjectBuilder().add("transitions", Json.createArrayBuilder()
 						.add(Json.createObjectBuilder().add("label", "a").add("detailsLabel", false).add("target", "2").build())
@@ -102,26 +102,26 @@ public class Main {
 						// no transitions
 						.build()).build())
 				.build();
-		
+
 		JsonObject ltsObject = Json.createObjectBuilder()
 				.add("initialState", "1")
 				.add("states", statesObject)
 				.build();
-		
+
 		System.out.println(ltsObject.toString());
 		return ltsObject;
 	}
 
-	
+
 	/**
 	 * Demonstrates how to open a LTS in pseuCo.com
-	 * 
+	 *
 	 * @param data
 	 * 		The LTS as a JSON object.
 	 */
 	public static void openInBrowserDemo(JsonObject data) {
 		PseuCoShare sharer = new PseuCoShare();
-		
+
 		try {
 			System.out.print("Submitting file...");
 			sharer.submitAndOpenLts(data);
@@ -130,36 +130,37 @@ public class Main {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
+
 	/**
 	 * Reads the standard input.
-	 * 
+	 *
 	 * @return The text entered on standard input, without newlines.
 	 * @throws IOException
 	 */
 	public static String readStandardInput() throws IOException {
 	    BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-	    
+
 	    StringBuilder builder = new StringBuilder();
-	    
+
 	    String s;
 	    while ((s = in.readLine()) != null && s.length() != 0) { // read until end or empty line
 	    	// reading this way strips empty lines, but they are not needed anyway
 	    	builder.append(s);
 	    }
-	
-		return builder.toString(); 
+
+		return builder.toString();
 	}
-	
-	
-	public static void main(String[] args) throws IOException {
+
+
+	public static void main(String[] args) throws IOException,
+			InterruptedException {
 		if (args.length == 1 && args[0].equals("-i")) {
 			// started with command line argument -i
-			
+
 			// read the input
 			String input = readStandardInput();
-			
+
 			// TODO do the minimization
 			JsonLtsSerializer serializer = new JsonLtsSerializer();
 			LtsMinimizer minimizer = new LtsMinimizer();
@@ -171,10 +172,10 @@ public class Main {
 			System.out.println(output);
 		} else {
 			// other command line arguments
-			
+
 			ltsParsingDemo();
 			openInBrowserDemo(ltsSerializationDemo());
-		}		
+		}
 	}
 
 }

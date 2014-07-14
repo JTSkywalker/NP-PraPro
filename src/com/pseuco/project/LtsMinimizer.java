@@ -1,12 +1,10 @@
 package com.pseuco.project;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
 
 public class LtsMinimizer {
-	public Lts minimize(Lts lts) {
+	public Lts minimize(Lts lts) throws InterruptedException {
 		Lts weakLts = calculateWeakLts(lts);
 		Partition partition = calculatePartition(weakLts);
 		return calculateMinimal(lts, weakLts, partition);
@@ -32,8 +30,9 @@ public class LtsMinimizer {
     	throw new UnsupportedOperationException();
 	}
 
-	private Partition calculatePartition(final Lts lts) {
-    	final Bisimulation b = new Bisimulation(lts);
+	private Partition calculatePartition(final Lts lts)
+			throws InterruptedException {
+		final Bisimulation b = new Bisimulation(lts);
     	return b.getCoarsestPartition();
 	}
 
