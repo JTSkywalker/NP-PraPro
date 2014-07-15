@@ -61,20 +61,22 @@ public class JsonLtsSerializer {
 		for(State state : states) {
 			JsonArrayBuilder transBuilder = Json.createArrayBuilder();
 			for(Transition trans : transitions) {
-				
-				transBuilder.add(Json.createObjectBuilder()
-						.add("source", trans.getSource().toString())
-					    .add("detailsLabel", false)
-					    .add("target", trans.getTarget().toString())
-					    .build());
+				if(trans.getSource().equals(state)) {
+					transBuilder.add(Json.createObjectBuilder()
+							.add("label", trans.getLabel().toString())
+						    .add("detailsLabel", false)
+						    .add("target", trans.getTarget().toString())
+						    .build());
+				}
 			}
 			JsonArray transArr = transBuilder.build();
-			statesBuilder.add("transitions", transArr);
+			JsonObject stateObject = Json.createObjectBuilder().add("transitions", transArr).build();
+			statesBuilder.add(state.toString(), stateObject);
 		}
 		JsonObject statesObject = statesBuilder.build();
 		
 		JsonObject ltsObject = Json.createObjectBuilder()
-			.add("initialState", "1")
+			.add("initialState", output.getInitialState().toString())
 			.add("states", statesObject)
 			.build();
 		return ltsObject.toString();

@@ -3,9 +3,9 @@ package com.pseuco.project.test;
 import static org.junit.Assert.*;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileNotFoundException;
 import java.util.HashSet;
+import java.util.Scanner;
 import java.util.Set;
 
 import org.junit.BeforeClass;
@@ -50,13 +50,13 @@ public class DeserializeSerializeTest {
 	
 	
 	@Test
-	public void testDeserialize() {
+	public void testDeserialize() {//TODO repair
 		try {
-			FileReader fread = new FileReader(new File("test/testLts"));
-			//String content = scanner.useDelimiter("\\Z").next();
-			//scanner.close();
-			//JsonLtsSerializer jls = new JsonLtsSerializer();
-			//assertEquals(jls.deserialize(content), lts);				
+			Scanner scanner = new Scanner(new File("SerDeserTestLts.json"));
+			String content = scanner.useDelimiter("\\Z").next();
+			scanner.close();
+			JsonLtsSerializer jls = new JsonLtsSerializer();
+			assertEquals(jls.deserialize(content), lts);				
 		} catch (FileNotFoundException e) {
 			fail("test broken (FileNotFoundException)");
 		}
@@ -64,7 +64,8 @@ public class DeserializeSerializeTest {
 
 	@Test
 	public void testSerialize() {
-		fail("Not yet implemented");
+		JsonLtsSerializer jls = new JsonLtsSerializer();
+		System.out.println(jls.serialize(lts).toString());
+		assertEquals(jls.deserialize(jls.serialize(lts)), lts);
 	}
-
 }
