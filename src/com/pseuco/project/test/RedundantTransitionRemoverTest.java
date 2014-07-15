@@ -60,7 +60,7 @@ public class RedundantTransitionRemoverTest {
 
 	@Test
 	public void test() throws InterruptedException {
-		assertEquals(ltsB, new RedundantTransitionRemover(ltsA).getMinimum());
+		assertEquals(ltsB, RedundantTransitionRemover.call(ltsA));
 	}
 
 }

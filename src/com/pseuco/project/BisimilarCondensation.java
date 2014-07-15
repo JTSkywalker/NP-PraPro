@@ -17,12 +17,12 @@ public class BisimilarCondensation {
 	private final Collection<Transition> transitions =
 			new HashSet<Transition>();
 
-	public BisimilarCondensation(final Lts weakLts, final Partition partition) {
+	private BisimilarCondensation(final Lts weakLts, final Partition partition) {
 		this.weakLts = weakLts;
 		this.partition = partition;
 	}
 
-	public Lts calculate() {
+	private Lts calculate() {
 		final State originalInitialState = weakLts.getInitialState();
 		final Block initialBlock =
 				partition.getContainingBlock(originalInitialState);
@@ -47,6 +47,10 @@ public class BisimilarCondensation {
 			transitions.add(new Transition(newState, t.getLabel(),
 					targetState));
 		}
+	}
+
+	public static Lts call(Lts weakLts, Partition partition) {
+		return new BisimilarCondensation(weakLts, partition).calculate();
 	}
 
 }

@@ -6,7 +6,7 @@ public class RedundantTransitionRemover {
 
 	private final Lts oldLts, newLts;
 
-	public RedundantTransitionRemover(Lts lts) {
+	private RedundantTransitionRemover(Lts lts) {
 		this.oldLts = lts;
 		newLts = new Lts(oldLts.getStates(), oldLts.getActions(),
 				Collections.<Transition> emptySet(), oldLts.getInitialState());
@@ -18,7 +18,7 @@ public class RedundantTransitionRemover {
 		}
 	}
 
-	public Lts getMinimum() {
+	private Lts getMinimum() {
 		return newLts;
 	}
 
@@ -52,5 +52,9 @@ public class RedundantTransitionRemover {
 		}
 
 		return false;
+	}
+
+	public static Lts call(Lts lts) {
+		return new RedundantTransitionRemover(lts).getMinimum();
 	}
 }
