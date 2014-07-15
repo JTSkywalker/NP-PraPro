@@ -1,0 +1,26 @@
+{
+    "initialState": "a.τ.0",
+    "states": {
+        "0": {
+            "transitions": []
+        },
+        "a.τ.0": {
+            "transitions": [
+                {
+                    "label": "a",
+                    "detailsLabel": false,
+                    "target": "τ.0"
+                }
+            ]
+        },
+        "τ.0": {
+            "transitions": [
+                {
+                    "label": "τ",
+                    "detailsLabel": false,
+                    "target": "0"
+                }
+            ]
+        }
+    }
+}
