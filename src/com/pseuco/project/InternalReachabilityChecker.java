@@ -1,5 +1,6 @@
 package com.pseuco.project;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -64,5 +65,9 @@ public class InternalReachabilityChecker {
 
 	public boolean isReachable(final State source, final State target) {
 		return reachabilityMap.get(source).contains(target);
+	}
+
+	public Collection<State> getReachable(final State source) {
+		return reachabilityMap.get(source);
 	}
 }
