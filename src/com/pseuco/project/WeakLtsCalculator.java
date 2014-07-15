@@ -1,6 +1,8 @@
 package com.pseuco.project;
 
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -16,25 +18,30 @@ public class WeakLtsCalculator {
 
 	private class WeakTransitionCalculator implements Runnable {
 
-		private final State source;
+		private final State strongSource;
 
-		public WeakTransitionCalculator(final State source) {
-			this.source = source;
+		public WeakTransitionCalculator(final State strongSource) {
+			this.strongSource = strongSource;
 		}
 
 		@Override
 		public void run() {
-			for (State target : reachabilityChecker.getReachable(source)) {
-				transitions
-						.add(new Transition(source, Action.INTERNAL, target));
-			}
-			for (State step1 : reachabilityChecker.getReachable(source)) {
-				for (Transition t : strongLts.outTransitions(step1)) {
-					if (!t.getLabel().equals(Action.INTERNAL)) {
-						for (State step3 : reachabilityChecker.getReachable(t
-								.getTarget())) {
-							transitions.add(new Transition(source,
-									t.getLabel(), step3));
+			for (Action a : strongLts.getActions()) {
+				Set<State> targetSet = new HashSet<State>();
+				for (State strongTarget : strongLts.post(strongSource, a)) {
+					for (State weakTarget : weakLts.post(strongTarget,
+							Action.INTERNAL)) {
+						targetSet.add(weakTarget);
+					}
+				}
+				for (State weakSource : weakLts.pre(strongSource,
+						Action.INTERNAL)) {
+					for (State target : targetSet) {
+						try {
+							transitions.put(new Transition(weakSource, a,
+									target));
+						} catch (InterruptedException e) {
+							return;
 						}
 					}
 				}
@@ -55,6 +62,12 @@ public class WeakLtsCalculator {
 				Collections.<Transition> emptyList(),
 				strongLts.getInitialState());
 		reachabilityChecker = new InternalReachabilityChecker(strongLts);
+		for (State source : strongLts.getStates()) {
+			for (State target : reachabilityChecker.getReachable(source)) {
+				weakLts.addTransition(new Transition(source, Action.INTERNAL,
+						target));
+			}
+		}
 		final ExecutorService executor = Executors
 				.newFixedThreadPool(NUM_THREADS);
 		for (State s : strongLts.getStates()) {
