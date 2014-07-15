@@ -10,7 +10,9 @@ import java.util.Set;
 
 import javax.json.Json;
 import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 
 public class JsonLtsSerializer {
@@ -52,6 +54,29 @@ public class JsonLtsSerializer {
 	}
 	
 	public String serialize(Lts output) {
-		throw new UnsupportedOperationException();
+		Collection<State> states = output.getStates();
+		Collection<Transition> transitions = output.getTransitions();
+		JsonObjectBuilder statesBuilder = Json.createObjectBuilder();
+		
+		for(State state : states) {
+			JsonArrayBuilder transBuilder = Json.createArrayBuilder();
+			for(Transition trans : transitions) {
+				
+				transBuilder.add(Json.createObjectBuilder()
+						.add("source", trans.getSource().toString())
+					    .add("detailsLabel", false)
+					    .add("target", trans.getTarget().toString())
+					    .build());
+			}
+			JsonArray transArr = transBuilder.build();
+			statesBuilder.add("transitions", transArr);
+		}
+		JsonObject statesObject = statesBuilder.build();
+		
+		JsonObject ltsObject = Json.createObjectBuilder()
+			.add("initialState", "1")
+			.add("states", statesObject)
+			.build();
+		return ltsObject.toString();
 	}
 }
