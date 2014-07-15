@@ -1,9 +1,15 @@
-package com.pseuco.project;
+package com.pseuco.project.test;
 
 import static org.junit.Assert.assertTrue;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.pseuco.project.Action;
+import com.pseuco.project.InternalReachabilityChecker;
+import com.pseuco.project.Lts;
+import com.pseuco.project.State;
+import com.pseuco.project.Transition;
 
 public class InternalReachabilityCheckerTest {
 
