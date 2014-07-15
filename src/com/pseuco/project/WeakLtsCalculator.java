@@ -9,6 +9,11 @@ import java.util.concurrent.TimeUnit;
 
 public class WeakLtsCalculator {
 
+	public static Lts call(final Lts strongLts)
+			throws InterruptedException {
+		return new WeakLtsCalculator(strongLts).getWeakLts();
+	}
+
 	private class WeakTransitionCalculator implements Runnable {
 
 		private final State source;
@@ -44,7 +49,7 @@ public class WeakLtsCalculator {
 			new LinkedBlockingQueue<Transition>();
 	final InternalReachabilityChecker reachabilityChecker;
 
-	public WeakLtsCalculator(final Lts strongLts) throws InterruptedException {
+	private WeakLtsCalculator(final Lts strongLts) throws InterruptedException {
 		this.strongLts = strongLts;
 		weakLts = new Lts(strongLts.getStates(), strongLts.getActions(),
 				Collections.<Transition> emptyList(),
@@ -70,7 +75,7 @@ public class WeakLtsCalculator {
 		}
 	}
 
-	public Lts get() {
+	private Lts getWeakLts() {
 		return weakLts;
 	}
 

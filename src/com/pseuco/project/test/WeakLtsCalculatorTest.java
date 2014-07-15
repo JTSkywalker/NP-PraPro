@@ -65,6 +65,6 @@ public class WeakLtsCalculatorTest {
 
 	@Test
 	public void test() throws InterruptedException {
-		assertEquals(ltsA, new WeakLtsCalculator(ltsB).get());
+		assertEquals(ltsA, WeakLtsCalculator.call(ltsB));
 	}
 }
