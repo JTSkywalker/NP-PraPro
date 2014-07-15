@@ -1,0 +1,31 @@
+{
+    "initialState": "a.b.0 + τ.0",
+    "states": {
+        "0": {
+            "transitions": []
+        },
+        "a.b.0 + τ.0": {
+            "transitions": [
+                {
+                    "label": "a",
+                    "detailsLabel": false,
+                    "target": "b.0" 
+                },
+                {
+                    "label": "τ",
+                    "detailsLabel": false,
+                    "target": "0" 
+                }
+            ]
+        },
+        "b.0": {
+            "transitions": [
+                {
+                    "label": "b",
+                    "detailsLabel": false,
+                    "target": "0" 
+                }
+            ]
+        }
+    }
+}
