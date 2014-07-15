@@ -38,7 +38,7 @@ public class LtsMinimizer {
 
 	private Lts calculateMinimal(final Lts strongLts, final Lts weakLts,
 			final Partition partition) {
-		Lts minLts = (new RedundantTransitionRemoval(new BisimilarCondensation(
+		Lts minLts = (new RedundantTransitionRemover(new BisimilarCondensation(
 				weakLts, partition).calculate())).getMinimum();
 		State initialState = strongLts.getInitialState();
 		Block initialBlock = partition

@@ -44,11 +44,8 @@ public class BisimilarCondensation {
 					partition.getContainingBlock(t.getTarget());
 			explore(targetBlock);
 			State targetState = blockToStateMap.get(targetBlock);
-			if (!t.getLabel().equals(Action.INTERNAL)
-					|| !newState.equals(targetState)) {
-				transitions.add(new Transition(newState, t.getLabel(),
-						targetState));
-			}
+			transitions.add(new Transition(newState, t.getLabel(),
+					targetState));
 		}
 	}
 
