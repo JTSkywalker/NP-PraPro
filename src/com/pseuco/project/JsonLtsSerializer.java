@@ -2,47 +2,51 @@ package com.pseuco.project;
 
 import java.io.StringReader;
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.InputMismatchException;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.json.JsonValue;
 
 public class JsonLtsSerializer {
 	public Lts deserialize(String input) {
-		Collection<State> states = new LinkedList<>();
-		Collection<Transition> transitions = new LinkedList<>();
-		Collection<Action> actions = new ConcurrentSkipListSet<>();
+		Collection<State> states = new HashSet<>();
+		Collection<Transition> transitions = new HashSet<>();
+		Collection<Action> actions = new HashSet<>();
 		
-		JsonObject ltsObject = Json.createReader(new StringReader(input)).readObject();
-		State initialState = new State(ltsObject.getString("initialState"));
-		JsonObject statesObject = ltsObject.getJsonObject("states");
-		for (String state : statesObject.keySet()) {
-
-			JsonObject stateObject = statesObject.getJsonObject(state);
-
-			JsonArray transitionsArray = stateObject.getJsonArray("transitions");
-
-			for (int i = 0; i < transitionsArray.size(); i++) {
-
-				JsonObject transition = transitionsArray.getJsonObject(i);
-
-				Action action = new Action(transition.getString("label"));
-				String target = transition.getString("target");
-				actions.add(action);
-				
-
-				// TODO decide whether to do something about it, else remove
-				// String detailsLabel = null;
-				// try {
-				// 	detailsLabel = transition.getString("detailsLabel");
-				//} catch (ClassCastException e) {
-					// ignore - detailsLabel = null
-				//}
-
+		HashMap<String, State> strState= new HashMap<>();
+		HashMap<State,JsonArray> stateTrans = new HashMap<>();
+		
+		State initialState;
+		try {
+			JsonObject ltsObject = Json.createReader(new StringReader(input)).readObject();
+			initialState = new State(ltsObject.getString("initialState"));
+			JsonObject statesObject = ltsObject.getJsonObject("states");
+			Set<Entry<String,JsonValue>> stateSet = statesObject.entrySet();
+			for (Entry<String,JsonValue> entry : stateSet) {
+				JsonObject stateObject = (JsonObject) entry.getValue();
+				State state = new State(entry.getKey());
+				states.add(state);
+				stateTrans.put(state, stateObject.getJsonArray("transitions"));
+				strState.put(entry.getKey(), state);
 			}
-
+			for (State key : stateTrans.keySet()) {
+				JsonArray transArr = stateTrans.get(key);
+				for (JsonValue trans : transArr) {
+					JsonObject transition = (JsonObject) trans;
+					Action action = new Action(transition.getString("label"));
+					String target = transition.getString("target");
+					actions.add(action);
+					transitions.add(new Transition(key, action, strState.get(target)));
+				}
+			}
+		} catch (ClassCastException e) {
+			throw new InputMismatchException();
 		}
 		return new Lts(states, actions, transitions, initialState);
 	}
