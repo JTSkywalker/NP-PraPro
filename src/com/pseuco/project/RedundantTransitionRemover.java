@@ -5,14 +5,12 @@ import java.util.Collections;
 public class RedundantTransitionRemover {
 
 	private final Lts oldLts, newLts;
-	private final LongestInternalPaths paths;
 
 	public RedundantTransitionRemover(Lts lts) {
 		this.oldLts = lts;
 		newLts = new Lts(oldLts.getStates(), oldLts.getActions(),
 				Collections.<Transition> emptySet(), oldLts.getInitialState());
 
-		paths = new LongestInternalPaths(oldLts);
 		for (Transition t : oldLts.getTransitions()) {
 			if (!isRedundant(t)) {
 				newLts.addTransition(t);
@@ -42,7 +40,7 @@ public class RedundantTransitionRemover {
 			}
 		} else {
 			for (State step1 : oldLts.post(source, Action.INTERNAL)) {
-				for (State step2 : newLts.post(step1, label)) {
+				for (State step2 : oldLts.post(step1, label)) {
 					if(!step1.equals(source) || !step2.equals(target)) {
 						if (oldLts.post(step2, Action.INTERNAL)
 								.contains(target)) {
