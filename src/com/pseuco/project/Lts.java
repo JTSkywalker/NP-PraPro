@@ -86,23 +86,6 @@ public class Lts {
 		sourceSet.add(t.getSource());
 	}
 
-    /**
-     * returns only tau-posts, and itself
-     * @param source
-     * @return
-     */
-    public Collection<State> postTau(State source) {
-    	throw new UnsupportedOperationException();
-    }
-
-    public Collection<State> preTau(State source) {
-    	throw new UnsupportedOperationException();
-    }
-
-    public Lts transTauClosure() {
-    	throw new UnsupportedOperationException();
-    }
-
 	public Collection<State> getStates() {
 		return states;
 	}
