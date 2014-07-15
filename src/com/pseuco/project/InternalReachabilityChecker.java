@@ -8,7 +8,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class PairwiseInternalReachabilityChecker {
+public class InternalReachabilityChecker {
 
 	private class FixedSourceReachabilityCheck implements Runnable {
 
@@ -42,7 +42,7 @@ public class PairwiseInternalReachabilityChecker {
 	private final Map<State, Set<State>> reachabilityMap =
 			new ConcurrentHashMap<State, Set<State>>();
 
-	public PairwiseInternalReachabilityChecker(final Lts lts)
+	public InternalReachabilityChecker(final Lts lts)
 			throws InterruptedException {
 		this.lts = lts;
 		final ExecutorService executor = Executors

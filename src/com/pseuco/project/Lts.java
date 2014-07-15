@@ -21,9 +21,15 @@ public class Lts {
 	private Map<State, Collection<Transition>> outTransitionsMap =
 			new HashMap<State, Collection<Transition>>();
 
+	public Lts(State initialState) {
+		this.initialState = initialState;
+		addState(initialState);
+	}
+
 	public Lts(final Iterable<State> states, final Iterable<Action> actions,
 			final Iterable<Transition> transitions, final State initialState) {
 		this.initialState = initialState;
+		addState(initialState);
 
 		for (State s : states) {
 			addState(s);
