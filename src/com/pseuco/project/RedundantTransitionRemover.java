@@ -39,10 +39,11 @@ public class RedundantTransitionRemover {
 				}
 			}
 		} else {
-			for (State step1 : oldLts.post(source, Action.INTERNAL)) {
-				for (State step2 : oldLts.post(step1, label)) {
-					if(!step1.equals(source) || !step2.equals(target)) {
-						if (oldLts.post(step2, Action.INTERNAL)
+			for (State strongSource : oldLts.post(source, Action.INTERNAL)) {
+				for (State strongTarget : oldLts.post(strongSource, label)) {
+					if (!strongSource.equals(source)
+							|| !strongTarget.equals(target)) {
+						if (oldLts.post(strongTarget, Action.INTERNAL)
 								.contains(target)) {
 							return true;
 						}
