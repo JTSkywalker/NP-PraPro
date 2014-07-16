@@ -86,7 +86,8 @@ public class Bisimulation {
 	}
 
 	private final Block MARKER = Block.EMPTY;
-	private final int NUM_THREADS = Runtime.getRuntime().availableProcessors();
+	private final int NUM_THREADS =
+			Runtime.getRuntime().availableProcessors() + 1;
 	private final ExecutorService executor;
 	private BlockingQueue<Block> out;
 	private final Lock outLock = new ReentrantLock();

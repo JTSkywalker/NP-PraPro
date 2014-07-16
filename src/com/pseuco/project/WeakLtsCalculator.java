@@ -38,15 +38,16 @@ public class WeakLtsCalculator {
 				for (State weakSource : weakLts.pre(strongSource,
 						Action.INTERNAL)) {
 					for (State target : targetSet) {
-						weakLts.addTransition(new Transition(weakSource, a, target));
+						weakLts.addTransition(new Transition(weakSource, a,
+								target));
 					}
 				}
 			}
 		}
 	}
 
-	private static final int NUM_THREADS =
-			Runtime.getRuntime().availableProcessors();
+	private final int NUM_THREADS =
+			Runtime.getRuntime().availableProcessors() + 1;
 	final Lts strongLts, weakLts;
 	final InternalReachabilityChecker reachabilityChecker;
 

@@ -38,7 +38,8 @@ public class InternalReachabilityChecker {
 		}
 	}
 
-	private final int NUM_THREADS = Runtime.getRuntime().availableProcessors();
+	private final int NUM_THREADS =
+			Runtime.getRuntime().availableProcessors() + 1;
 	private final Lts lts;
 	private final Map<State, Set<State>> reachabilityMap =
 			new ConcurrentHashMap<State, Set<State>>();
