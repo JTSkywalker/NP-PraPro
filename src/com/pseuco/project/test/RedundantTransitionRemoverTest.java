@@ -41,9 +41,14 @@ public class RedundantTransitionRemoverTest {
 		ltsA.addTransition(new Transition(s2, i, s3));
 
 		ltsA.addTransition(new Transition(s1, a, s1));
+		ltsA.addTransition(new Transition(s1, a, s2));
 		ltsA.addTransition(new Transition(s1, a, s3));
+		ltsA.addTransition(new Transition(s2, a, s1));
+		ltsA.addTransition(new Transition(s2, a, s2));
 		ltsA.addTransition(new Transition(s2, a, s3));
 		ltsA.addTransition(new Transition(s3, a, s1));
+		ltsA.addTransition(new Transition(s3, a, s2));
+		ltsA.addTransition(new Transition(s3, a, s3));
 
 		ltsB = new Lts(s1);
 		ltsB.addState(s1);

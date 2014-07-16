@@ -39,14 +39,18 @@ public class RedundantTransitionRemover {
 				}
 			}
 		} else {
+			for (State strongTarget : oldLts.post(source, label)) {
+				if (!strongTarget.equals(target)) {
+					if (oldLts.post(strongTarget, Action.INTERNAL)
+							.contains(target)) {
+						return true;
+					}
+				}
+			}
 			for (State strongSource : oldLts.post(source, Action.INTERNAL)) {
-				for (State strongTarget : oldLts.post(strongSource, label)) {
-					if (!strongSource.equals(source)
-							|| !strongTarget.equals(target)) {
-						if (oldLts.post(strongTarget, Action.INTERNAL)
-								.contains(target)) {
-							return true;
-						}
+				if (!strongSource.equals(source)) {
+					if (oldLts.post(strongSource, label).contains(target)) {
+						return true;
 					}
 				}
 			}
