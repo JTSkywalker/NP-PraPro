@@ -1,0 +1,17 @@
+{
+    "initialState": "X",
+    "states": {
+        "0": {
+            "transitions": []
+        },
+        "X": {
+            "transitions": [
+                {
+                    "label": "a",
+                    "detailsLabel": false,
+                    "target": "0"
+                }
+            ]
+        }
+    }
+}

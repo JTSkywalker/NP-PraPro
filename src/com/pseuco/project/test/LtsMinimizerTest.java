@@ -65,17 +65,18 @@ public class LtsMinimizerTest {
 
 	@Test
 	public void test() throws InterruptedException {
-		for (File inFile : dataDir.listFiles()) {
+		for (File resultFile : dataDir.listFiles()) {
 			try {
-				String name = inFile.getName();
-				if (name.endsWith("in")) {
-					String baseName = name.substring(0, name.lastIndexOf("."));
-					String resultFileName = baseName + ".res";
-					Path resultFilePath = Paths.get(inFile.getParent() + "/"
-							+ resultFileName);
-					String in = new String(Files.readAllBytes(inFile.toPath()));
-					String expectedRes = new String(
-							Files.readAllBytes(resultFilePath));
+				String name = resultFile.getName();
+				if (name.endsWith(".ref.json")) {
+					String baseName = name.substring(0, name.lastIndexOf(".ref.json"));
+					String inFileName = baseName + ".json";
+					Path inFilePath = Paths.get(resultFile.getParent() + "/"
+							+ inFileName);
+					String expectedRes = new String(Files.readAllBytes(
+							resultFile.toPath()));
+					String in = new String(
+							Files.readAllBytes(inFilePath));
 					LtsMinimizer minimizer = new LtsMinimizer();
 					JsonLtsSerializer serializer = new JsonLtsSerializer();
 					IsoChecker.assertIsomorphic(expectedRes, serializer
@@ -87,5 +88,4 @@ public class LtsMinimizerTest {
 			}
 		}
 	}
-
 }

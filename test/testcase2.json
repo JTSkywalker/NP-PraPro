@@ -1,0 +1,47 @@
+{
+    "initialState": "X",
+    "states": {
+        "0": {
+            "transitions": []
+        },
+        "X": {
+            "transitions": [
+                {
+                    "label": "a",
+                    "detailsLabel": false,
+                    "target": "0"
+                }
+            ]
+        },
+        "0 + 0": {
+            "transitions": []
+        },
+        "Y": {
+            "transitions": [
+                {
+                    "label": "b",
+                    "detailsLabel": false,
+                    "target": "τ.Y"
+                }
+            ]
+        },
+        "b.X": {
+            "transitions": [
+                {
+                    "label": "b",
+                    "detailsLabel": false,
+                    "target": "X"
+                }
+            ]
+        },
+        "τ.Y": {
+            "transitions": [
+                {
+                    "label": "τ",
+                    "detailsLabel": false,
+                    "target": "Y"
+                }
+            ]
+        }
+    }
+}

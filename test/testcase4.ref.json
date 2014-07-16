@@ -1,0 +1,4 @@
+
+
+{"initialState":"N","states":{"N":{"transitions":[{"label":"τ","detailsLabel":false,"target":"a.(0 + 0) + x1.(0 + 0)"},{"label":"x2","detailsLabel":false,"target":"0 + 0"}]},"a.(0 + 0) + x1.(0 + 0)":{"transitions":[{"label":"a","detailsLabel":false,"target":"0 + 0"},{"label":"x1","detailsLabel":false,"target":"0 + 0"}]},"0 + 0":{"transitions":[]}}}
+

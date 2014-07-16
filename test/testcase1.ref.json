@@ -1,0 +1,1 @@
+{"initialState":"A","states":{"A":{"transitions":[{"label":"b","detailsLabel":false,"target":"E"},{"label":"a","detailsLabel":false,"target":"E"}]},"E":{"transitions":[]}}}

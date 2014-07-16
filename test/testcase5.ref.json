@@ -1,0 +1,4 @@
+
+
+{"initialState":"N","states":{"N":{"transitions":[{"label":"a","detailsLabel":false,"target":"b.(0 + 0)"}]},"b.(0 + 0)":{"transitions":[{"label":"b","detailsLabel":false,"target":"0 + 0"}]},"0 + 0":{"transitions":[]}}}
+
