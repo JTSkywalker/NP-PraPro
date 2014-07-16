@@ -2,24 +2,29 @@ package com.pseuco.project;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Lts {
 
-	private final Set<State> states = new HashSet<State>();
-	private final Set<Action> actions = new HashSet<Action>();
-	private final Set<Transition> transitions = new HashSet<Transition>();
+	private final ConcurrentHashMap<State, Boolean> states =
+			new ConcurrentHashMap<State, Boolean>();
+	private final ConcurrentHashMap<Action, Boolean> actions =
+			new ConcurrentHashMap<Action, Boolean>();
+	private final ConcurrentHashMap<Transition, Boolean> transitions =
+			new ConcurrentHashMap<Transition, Boolean>();
 	private final State initialState;
-	private Map<State, Map<Action, Set<State>>> postMap =
-			new HashMap<State, Map<Action, Set<State>>>();
-	private Map<State, Map<Action, Set<State>>> preMap =
-			new HashMap<State, Map<Action, Set<State>>>();
-	private Map<State, Collection<Transition>> outTransitionsMap =
-			new HashMap<State, Collection<Transition>>();
+	private ConcurrentHashMap<State, ConcurrentHashMap<Action,
+		ConcurrentHashMap<State, Boolean>>> postMap = new ConcurrentHashMap<
+		State, ConcurrentHashMap<Action, ConcurrentHashMap<State, Boolean>>>();
+	private ConcurrentHashMap<State, ConcurrentHashMap<Action,
+	ConcurrentHashMap<State, Boolean>>>
+		preMap = new ConcurrentHashMap<State, ConcurrentHashMap<Action,
+		ConcurrentHashMap<State, Boolean>>>();
+	private ConcurrentHashMap<State, ConcurrentHashMap<Transition, Boolean>>
+		outTransitionsMap = new ConcurrentHashMap<State,
+		ConcurrentHashMap<Transition, Boolean>>();
 
 	public Lts(State initialState) {
 		this.initialState = initialState;
@@ -43,59 +48,60 @@ public class Lts {
 	}
 
 	public void addState(State s) {
-		states.add(s);
-		outTransitionsMap.put(s, new LinkedList<Transition>());
+		states.put(s, true);
 	}
 
 	public void addAction(Action a) {
-		actions.add(a);
+		actions.put(a, true);
 	}
 
 	public void addTransition(Transition t) {
-		transitions.add(t);
+		transitions.put(t, true);
 		addToPostMap(t);
 		addToPreMap(t);
-		outTransitionsMap.get(t.getSource()).add(t);
+		addToOutTransitionsMap(t);
 	}
 
 	private void addToPostMap(Transition t) {
-		Map<Action, Set<State>> outMap = postMap.get(t.getSource());
-		if (outMap == null) {
-			outMap = new HashMap<Action, Set<State>>();
-			postMap.put(t.getSource(), outMap);
-		}
-		Set<State> targetSet = outMap.get(t.getLabel());
-		if (targetSet == null) {
-			targetSet = new HashSet<State>();
-			outMap.put(t.getLabel(), targetSet);
-		}
-		targetSet.add(t.getTarget());
+		postMap.putIfAbsent(t.getSource(), new ConcurrentHashMap<Action,
+				ConcurrentHashMap<State, Boolean>>());
+		ConcurrentHashMap<Action, ConcurrentHashMap<State, Boolean>> outMap =
+				postMap.get(t.getSource());
+		outMap.putIfAbsent(t.getLabel(),
+				new ConcurrentHashMap<State, Boolean>());
+		ConcurrentHashMap<State, Boolean> targetSet = outMap.get(t.getLabel());
+		targetSet.put(t.getTarget(), true);
 	}
 
 	private void addToPreMap(Transition t) {
-		Map<Action, Set<State>> inMap = preMap.get(t.getTarget());
-		if (inMap == null) {
-			inMap = new HashMap<Action, Set<State>>();
-			preMap.put(t.getTarget(), inMap);
-		}
-		Set<State> sourceSet = inMap.get(t.getLabel());
-		if (sourceSet == null) {
-			sourceSet = new HashSet<State>();
-			inMap.put(t.getLabel(), sourceSet);
-		}
-		sourceSet.add(t.getSource());
+		preMap.putIfAbsent(t.getTarget(), new ConcurrentHashMap<Action,
+				ConcurrentHashMap<State, Boolean>>());
+		ConcurrentHashMap<Action, ConcurrentHashMap<State, Boolean>> inMap =
+				preMap.get(t.getTarget());
+		inMap.putIfAbsent(t.getLabel(),
+				new ConcurrentHashMap<State, Boolean>());
+		ConcurrentHashMap<State, Boolean> sourceSet = inMap.get(t.getLabel());
+		sourceSet.put(t.getSource(), true);
+	}
+
+	private void addToOutTransitionsMap(Transition t) {
+		outTransitionsMap.putIfAbsent(t.getSource(),
+						new ConcurrentHashMap<Transition, Boolean>());
+		ConcurrentHashMap<Transition, Boolean> transitions =
+				outTransitionsMap.get(t.getSource());
+		transitions.put(t, true);
 	}
 
 	public Collection<State> getStates() {
-		return states;
+		return states.keySet();
 	}
 
 	public Collection<Action> getActions() {
-		return actions;
+		return actions.keySet();
 	}
 
 	public Collection<Transition> getTransitions() {
-		return transitions;
+		return transitions.keySet();
 	}
 
 	public State getInitialState() {
@@ -103,15 +109,16 @@ public class Lts {
 	}
 
 	public Set<State> post(final State source, final Action a) {
-		Map<Action, Set<State>> outMap = postMap.get(source);
+		ConcurrentHashMap<Action, ConcurrentHashMap<State, Boolean>> outMap =
+				postMap.get(source);
 		if (outMap == null) {
 			return Collections.emptySet();
 		}
-		Set<State> targetSet = outMap.get(a);
+		ConcurrentHashMap<State, Boolean> targetSet = outMap.get(a);
 		if (targetSet == null) {
 			return Collections.emptySet();
 		}
-		return targetSet;
+		return targetSet.keySet();
 	}
 
 	public Set<State> post(final Collection<State> sources, final Action a) {
@@ -123,15 +130,16 @@ public class Lts {
 	}
 
 	public Set<State> pre(final State target, final Action a) {
-		Map<Action, Set<State>> inMap = preMap.get(target);
+		ConcurrentHashMap<Action, ConcurrentHashMap<State, Boolean>> inMap =
+				preMap.get(target);
 		if (inMap == null) {
 			return Collections.emptySet();
 		}
-		Set<State> sourceSet = inMap.get(a);
+		ConcurrentHashMap<State, Boolean> sourceSet = inMap.get(a);
 		if (sourceSet == null) {
 			return Collections.emptySet();
 		}
-		return sourceSet;
+		return sourceSet.keySet();
 	}
 
 	public Set<State> pre(final Collection<State> targets, final Action a) {
@@ -143,7 +151,12 @@ public class Lts {
 	}
 
 	public Collection<Transition> outTransitions(State s) {
-		return outTransitionsMap.get(s);
+		ConcurrentHashMap<Transition, Boolean> outTransitions =
+				outTransitionsMap.get(s);
+		if (outTransitions == null) {
+			return Collections.emptySet();
+		}
+		return outTransitions.keySet();
 	}
 
 	public boolean equals(Object obj) {
