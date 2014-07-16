@@ -3,10 +3,8 @@ package com.pseuco.project;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 public class WeakLtsCalculator {
@@ -37,12 +35,7 @@ public class WeakLtsCalculator {
 				for (State weakSource : weakLts.pre(strongSource,
 						Action.INTERNAL)) {
 					for (State target : targetSet) {
-						try {
-							transitions.put(new Transition(weakSource, a,
-									target));
-						} catch (InterruptedException e) {
-							return;
-						}
+						weakLts.addTransition(new Transition(weakSource, a, target));
 					}
 				}
 			}
@@ -52,8 +45,6 @@ public class WeakLtsCalculator {
 	private static final int NUM_THREADS =
 			Runtime.getRuntime().availableProcessors();
 	final Lts strongLts, weakLts;
-	final BlockingQueue<Transition> transitions =
-			new LinkedBlockingQueue<Transition>();
 	final InternalReachabilityChecker reachabilityChecker;
 
 	private WeakLtsCalculator(final Lts strongLts) throws InterruptedException {
@@ -82,9 +73,6 @@ public class WeakLtsCalculator {
 				executor.shutdownNow();
 				throw e;
 			}
-		}
-		while (!transitions.isEmpty()) {
-			weakLts.addTransition(transitions.take());
 		}
 	}
 
