@@ -1,6 +1,7 @@
 package com.pseuco.project.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,12 +12,16 @@ import java.util.Set;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.pseuco.project.*;
+import com.pseuco.project.Action;
+import com.pseuco.project.JsonLtsSerializer;
+import com.pseuco.project.Lts;
+import com.pseuco.project.State;
+import com.pseuco.project.Transition;
 
 public class DeserializeSerializeTest {
-	
+
 	private static Lts lts;
-	
+
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		Set<State> states = new HashSet<>(3);
@@ -44,11 +49,11 @@ public class DeserializeSerializeTest {
 		transs.add(new Transition(new State(bStop),
                 new Action(b),
                 new State(stop)));
-		
+
 		lts = new Lts(states, actions, transs, new State(abStopPlusτStop));
 	}
-	
-	
+
+
 	@Test
 	public void testDeserialize() {//TODO repair
 		try {
@@ -56,7 +61,7 @@ public class DeserializeSerializeTest {
 			String content = scanner.useDelimiter("\\Z").next();
 			scanner.close();
 			JsonLtsSerializer jls = new JsonLtsSerializer();
-			assertEquals(jls.deserialize(content), lts);				
+			assertEquals(jls.deserialize(content), lts);
 		} catch (FileNotFoundException e) {
 			fail("test broken (FileNotFoundException)");
 		}
@@ -65,7 +70,6 @@ public class DeserializeSerializeTest {
 	@Test
 	public void testSerialize() {
 		JsonLtsSerializer jls = new JsonLtsSerializer();
-		System.out.println(jls.serialize(lts).toString());
 		assertEquals(jls.deserialize(jls.serialize(lts)), lts);
 	}
 }
