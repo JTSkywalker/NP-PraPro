@@ -25,6 +25,9 @@ public class WeakLtsCalculator {
 		@Override
 		public void run() {
 			for (Action a : strongLts.getActions()) {
+				if (a.equals(Action.INTERNAL)) {
+					continue;
+				}
 				Set<State> targetSet = new HashSet<State>();
 				for (State strongTarget : strongLts.post(strongSource, a)) {
 					for (State weakTarget : weakLts.post(strongTarget,
