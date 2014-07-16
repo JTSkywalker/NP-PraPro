@@ -186,7 +186,7 @@ public class Lts {
 	}
 
 	public String toString() {
-		return String.format("(%s, %s, %s)", states.toString(),
-				actions.toString(), transitions.toString());
+		return String.format("(%s, %s, %s)", states.keySet().toString(),
+				actions.keySet().toString(), transitions.keySet().toString());
 	}
 }
