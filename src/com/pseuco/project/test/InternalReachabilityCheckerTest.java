@@ -37,6 +37,7 @@ public class InternalReachabilityCheckerTest {
 		ltsA.addTransition(new Transition(s2, i, s3));
 
 		c1 = new InternalReachabilityChecker(ltsA);
+		c1.check();
 
 		ltsB = new Lts(s1);
 		ltsB.addState(s1);
@@ -49,6 +50,7 @@ public class InternalReachabilityCheckerTest {
 		ltsB.addTransition(new Transition(s3, i, s1));
 
 		c2 = new InternalReachabilityChecker(ltsB);
+		c2.check();
 	}
 
 	@Test

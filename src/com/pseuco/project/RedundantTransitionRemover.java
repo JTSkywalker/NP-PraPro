@@ -4,11 +4,14 @@ import java.util.Collections;
 
 public class RedundantTransitionRemover {
 
-	private final Lts oldLts, newLts;
+	private final Lts oldLts;
 
 	private RedundantTransitionRemover(Lts lts) {
 		this.oldLts = lts;
-		newLts = new Lts(oldLts.getStates(), oldLts.getActions(),
+	}
+
+	private Lts calculateMinimum() {
+		Lts newLts = new Lts(oldLts.getStates(), oldLts.getActions(),
 				Collections.<Transition> emptySet(), oldLts.getInitialState());
 
 		for (Transition t : oldLts.getTransitions()) {
@@ -16,9 +19,6 @@ public class RedundantTransitionRemover {
 				newLts.addTransition(t);
 			}
 		}
-	}
-
-	private Lts getMinimum() {
 		return newLts;
 	}
 
@@ -60,6 +60,6 @@ public class RedundantTransitionRemover {
 	}
 
 	public static Lts call(Lts lts) {
-		return new RedundantTransitionRemover(lts).getMinimum();
+		return new RedundantTransitionRemover(lts).calculateMinimum();
 	}
 }

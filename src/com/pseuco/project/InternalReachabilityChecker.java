@@ -44,9 +44,11 @@ public class InternalReachabilityChecker {
 	private final Map<State, Set<State>> reachabilityMap =
 			new ConcurrentHashMap<State, Set<State>>();
 
-	public InternalReachabilityChecker(final Lts lts)
-			throws InterruptedException {
+	public InternalReachabilityChecker(final Lts lts) {
 		this.lts = lts;
+	}
+
+	public void check() throws InterruptedException {
 		final ExecutorService executor = Executors
 				.newFixedThreadPool(NUM_THREADS);
 		for (State s : lts.getStates()) {

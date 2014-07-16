@@ -11,7 +11,7 @@ public class WeakLtsCalculator {
 
 	public static Lts call(final Lts strongLts)
 			throws InterruptedException {
-		return new WeakLtsCalculator(strongLts).getWeakLts();
+		return new WeakLtsCalculator(strongLts).calculate();
 	}
 
 	private class WeakTransitionCalculator implements Runnable {
@@ -49,14 +49,18 @@ public class WeakLtsCalculator {
 	private final int NUM_THREADS =
 			Runtime.getRuntime().availableProcessors() + 1;
 	final Lts strongLts, weakLts;
-	final InternalReachabilityChecker reachabilityChecker;
+	InternalReachabilityChecker reachabilityChecker;
 
-	private WeakLtsCalculator(final Lts strongLts) throws InterruptedException {
+	private WeakLtsCalculator(final Lts strongLts) {
 		this.strongLts = strongLts;
 		weakLts = new Lts(strongLts.getStates(), strongLts.getActions(),
 				Collections.<Transition> emptyList(),
 				strongLts.getInitialState());
+	}
+
+	private Lts calculate() throws InterruptedException {
 		reachabilityChecker = new InternalReachabilityChecker(strongLts);
+		reachabilityChecker.check();
 		for (State source : strongLts.getStates()) {
 			for (State target : reachabilityChecker.getReachable(source)) {
 				weakLts.addTransition(new Transition(source, Action.INTERNAL,
@@ -78,9 +82,6 @@ public class WeakLtsCalculator {
 				throw e;
 			}
 		}
-	}
-
-	private Lts getWeakLts() {
 		return weakLts;
 	}
 

@@ -5,7 +5,7 @@ public class LtsMinimizer {
 	public Lts minimize(final Lts lts) throws InterruptedException {
 		final Lts weakLts = WeakLtsCalculator.call(lts);
 		final Bisimulation b = new Bisimulation(weakLts);
-		final Partition p = b.getCoarsestPartition();
+		final Partition p = b.calculateCoarsestPartition();
 		final Lts c = BisimilarCondensation.call(weakLts, p);
 		final Lts d = RedundantTransitionRemover.call(c);
 		final State initialState = lts.getInitialState();

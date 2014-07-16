@@ -95,18 +95,18 @@ public class Bisimulation {
 			new LinkedBlockingQueue<Event>();
 	private final ConcurrentHashMap<Block, Boolean> splitBlocks =
 			new ConcurrentHashMap<Block, Boolean>();
-	private final Partition partition;
 
 	private final Lts lts;
 
-	public Bisimulation(final Lts lts) throws InterruptedException {
+	public Bisimulation(final Lts lts) {
 		this.lts = lts;
+		executor = Executors.newFixedThreadPool(NUM_THREADS);
+	}
 
+	public Partition calculateCoarsestPartition() throws InterruptedException {
 		out = new LinkedBlockingQueue<Block>();
 		out.add(new Block(lts.getStates()));
 		out.add(MARKER);
-
-		executor = Executors.newFixedThreadPool(NUM_THREADS);
 
 		try {
 			launchSplitJobsOnBlock(new Block(lts.getStates()));
@@ -126,11 +126,7 @@ public class Bisimulation {
 			executor.shutdownNow();
 		}
 
-		this.partition = outputAsPartition();
-	}
-
-	public Partition getCoarsestPartition() {
-		return this.partition;
+		return outputAsPartition();
 	}
 
 	private void launchSplitJobsOnBlock(final Block targetBlock)
