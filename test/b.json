@@ -1,0 +1,65 @@
+{
+    "initialState": "A",
+    "states": {
+        "A": {
+            "transitions": [
+                {
+                    "label": "τ",
+                    "detailsLabel": false,
+                    "target": "B"
+                },
+                {
+                    "label": "a",
+                    "detailsLabel": false,
+                    "target": "D"
+                }
+            ]
+        },
+        "B": {
+            "transitions": [
+                {
+                    "label": "τ",
+                    "detailsLabel": false,
+                    "target": "A"
+                },
+                {
+                    "label": "τ",
+                    "detailsLabel": false,
+                    "target": "C"
+                }
+            ]
+        },
+        "D": {
+            "transitions": [
+                {
+                    "label": "τ",
+                    "detailsLabel": false,
+                    "target": "E"
+                }
+            ]
+        },
+        "E": {
+            "transitions": [
+                {
+                    "label": "τ",
+                    "detailsLabel": false,
+                    "target": "C"
+                }
+            ]
+        },
+        "C": {
+            "transitions": [
+                {
+                    "label": "τ",
+                    "detailsLabel": false,
+                    "target": "D"
+                },
+                {
+                    "label": "b",
+                    "detailsLabel": false,
+                    "target": "E"
+                }
+            ]
+        }
+    }
+}

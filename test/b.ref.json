@@ -1,0 +1,1 @@
+{"initialState":"0","states":{"1":{"transitions":[{"label":"b","detailsLabel":false,"target":"1"}]},"0":{"transitions":[{"label":"τ","detailsLabel":false,"target":"1"},{"label":"a","detailsLabel":false,"target":"1"},{"label":"τ","detailsLabel":false,"target":"0"}]}}}
