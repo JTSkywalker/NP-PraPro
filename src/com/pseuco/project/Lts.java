@@ -15,13 +15,13 @@ public class Lts {
 	private final ConcurrentHashMap<Transition, Boolean> transitions =
 			new ConcurrentHashMap<Transition, Boolean>();
 	private final State initialState;
-	private ConcurrentHashMap<State, ConcurrentHashMap<Action,
-		ConcurrentHashMap<State, Boolean>>> postMap = new ConcurrentHashMap<
-		State, ConcurrentHashMap<Action, ConcurrentHashMap<State, Boolean>>>();
-	private ConcurrentHashMap<State, ConcurrentHashMap<Action,
-	ConcurrentHashMap<State, Boolean>>>
-		preMap = new ConcurrentHashMap<State, ConcurrentHashMap<Action,
-		ConcurrentHashMap<State, Boolean>>>();
+	private ConcurrentHashMap<Tupel<State, Action>,
+		ConcurrentHashMap<State, Boolean>> postMap = new ConcurrentHashMap<
+		Tupel<State, Action>, ConcurrentHashMap<State, Boolean>>();
+	private ConcurrentHashMap<Tupel<State, Action>,
+	ConcurrentHashMap<State, Boolean>>
+		preMap = new ConcurrentHashMap<Tupel<State, Action>,
+		ConcurrentHashMap<State, Boolean>>();
 	private ConcurrentHashMap<State, ConcurrentHashMap<Transition, Boolean>>
 		outTransitionsMap = new ConcurrentHashMap<State,
 		ConcurrentHashMap<Transition, Boolean>>();
@@ -63,24 +63,18 @@ public class Lts {
 	}
 
 	private void addToPostMap(Transition t) {
-		postMap.putIfAbsent(t.getSource(), new ConcurrentHashMap<Action,
-				ConcurrentHashMap<State, Boolean>>());
-		ConcurrentHashMap<Action, ConcurrentHashMap<State, Boolean>> outMap =
-				postMap.get(t.getSource());
-		outMap.putIfAbsent(t.getLabel(),
-				new ConcurrentHashMap<State, Boolean>());
-		ConcurrentHashMap<State, Boolean> targetSet = outMap.get(t.getLabel());
+		Tupel<State, Action> tupel = new Tupel<State, Action>(t.getSource(),
+				t.getLabel());
+		postMap.putIfAbsent(tupel, new ConcurrentHashMap<State, Boolean>());
+		ConcurrentHashMap<State, Boolean> targetSet = postMap.get(tupel);
 		targetSet.put(t.getTarget(), true);
 	}
 
 	private void addToPreMap(Transition t) {
-		preMap.putIfAbsent(t.getTarget(), new ConcurrentHashMap<Action,
-				ConcurrentHashMap<State, Boolean>>());
-		ConcurrentHashMap<Action, ConcurrentHashMap<State, Boolean>> inMap =
-				preMap.get(t.getTarget());
-		inMap.putIfAbsent(t.getLabel(),
-				new ConcurrentHashMap<State, Boolean>());
-		ConcurrentHashMap<State, Boolean> sourceSet = inMap.get(t.getLabel());
+		Tupel<State, Action> tupel = new Tupel<State, Action>(t.getTarget(),
+				t.getLabel());
+		preMap.putIfAbsent(tupel, new ConcurrentHashMap<State, Boolean>());
+		ConcurrentHashMap<State, Boolean> sourceSet = preMap.get(tupel);
 		sourceSet.put(t.getSource(), true);
 	}
 
@@ -109,12 +103,8 @@ public class Lts {
 	}
 
 	public Set<State> post(final State source, final Action a) {
-		ConcurrentHashMap<Action, ConcurrentHashMap<State, Boolean>> outMap =
-				postMap.get(source);
-		if (outMap == null) {
-			return Collections.emptySet();
-		}
-		ConcurrentHashMap<State, Boolean> targetSet = outMap.get(a);
+		ConcurrentHashMap<State, Boolean> targetSet =
+				postMap.get(new Tupel<State, Action>(source, a));
 		if (targetSet == null) {
 			return Collections.emptySet();
 		}
@@ -130,12 +120,8 @@ public class Lts {
 	}
 
 	public Set<State> pre(final State target, final Action a) {
-		ConcurrentHashMap<Action, ConcurrentHashMap<State, Boolean>> inMap =
-				preMap.get(target);
-		if (inMap == null) {
-			return Collections.emptySet();
-		}
-		ConcurrentHashMap<State, Boolean> sourceSet = inMap.get(a);
+		ConcurrentHashMap<State, Boolean> sourceSet =
+				preMap.get(new Tupel<State, Action>(target, a));
 		if (sourceSet == null) {
 			return Collections.emptySet();
 		}
@@ -189,4 +175,45 @@ public class Lts {
 		return String.format("(%s, %s, %s)", states.keySet().toString(),
 				actions.keySet().toString(), transitions.keySet().toString());
 	}
+}
+
+class Tupel<A, B> {
+
+	private final A a;
+	private final B b;
+
+	public Tupel(A a, B b) {
+		this.a = a;
+		this.b = b;
+	}
+
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (obj == this) {
+			return true;
+		}
+		if (obj.getClass() == getClass()) {
+			@SuppressWarnings("unchecked")
+			Tupel<A, B> other = (Tupel<A, B>) obj;
+			if (a.equals(other.a) && b.equals(other.b)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public int hashCode() {
+		int hash = 17;
+		int multi = 31;
+		hash += a.hashCode();
+		hash = hash * multi + b.hashCode();
+		return hash;
+	}
+
+	public String toString() {
+		return "(" + a.toString() + ", " + b.toString() + ")";
+	}
+
 }
