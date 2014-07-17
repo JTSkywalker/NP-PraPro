@@ -14,11 +14,11 @@ public class WeakLtsCalculator {
 		return new WeakLtsCalculator(strongLts).calculate();
 	}
 
-	private class WeakTransitionCalculator implements Runnable {
+	private class VisibleTransitionCalculator implements Runnable {
 
 		private final State strongSource;
 
-		public WeakTransitionCalculator(final State strongSource) {
+		public VisibleTransitionCalculator(final State strongSource) {
 			this.strongSource = strongSource;
 		}
 
@@ -46,6 +46,23 @@ public class WeakLtsCalculator {
 		}
 	}
 
+	private class InvisibleTransitionCalculator implements Runnable {
+
+		private final State source;
+
+		public InvisibleTransitionCalculator(final State source) {
+			this.source = source;
+		}
+
+		@Override
+		public void run() {
+			for (State target : reachabilityChecker.getReachable(source)) {
+				weakLts.addTransition(new Transition(source, Action.INTERNAL,
+						target));
+			}
+		}
+	}
+
 	private final int NUM_THREADS =
 			Runtime.getRuntime().availableProcessors() + 1;
 	final Lts strongLts, weakLts;
@@ -59,18 +76,18 @@ public class WeakLtsCalculator {
 	}
 
 	private Lts calculate() throws InterruptedException {
+		calculateInvisible();
+		calculateVisible();
+		return weakLts;
+	}
+
+	private void calculateInvisible() throws InterruptedException {
 		reachabilityChecker = new InternalReachabilityChecker(strongLts);
 		reachabilityChecker.check();
-		for (State source : strongLts.getStates()) {
-			for (State target : reachabilityChecker.getReachable(source)) {
-				weakLts.addTransition(new Transition(source, Action.INTERNAL,
-						target));
-			}
-		}
 		final ExecutorService executor = Executors
 				.newFixedThreadPool(NUM_THREADS);
 		for (State s : strongLts.getStates()) {
-			executor.execute(new WeakTransitionCalculator(s));
+			executor.execute(new InvisibleTransitionCalculator(s));
 		}
 		executor.shutdown();
 		while (!executor.isTerminated()) {
@@ -82,7 +99,23 @@ public class WeakLtsCalculator {
 				throw e;
 			}
 		}
-		return weakLts;
 	}
 
+	private void calculateVisible() throws InterruptedException {
+		final ExecutorService executor = Executors
+				.newFixedThreadPool(NUM_THREADS);
+		for (State s : strongLts.getStates()) {
+			executor.execute(new VisibleTransitionCalculator(s));
+		}
+		executor.shutdown();
+		while (!executor.isTerminated()) {
+			try {
+				executor.awaitTermination(Long.MAX_VALUE,
+						TimeUnit.MILLISECONDS);
+			} catch (InterruptedException e) {
+				executor.shutdownNow();
+				throw e;
+			}
+		}
+	}
 }
