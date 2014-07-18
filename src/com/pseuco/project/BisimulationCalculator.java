@@ -103,7 +103,7 @@ public class BisimulationCalculator {
 	private Lts lts;
 
 
-	public Partition calculateCoarsestPartition(final Lts lts) throws InterruptedException {
+	private Partition calculateCoarsestPartition(final Lts lts) throws InterruptedException {
 		this.lts = lts;
 		executor = Executors.newFixedThreadPool(NUM_THREADS);
 		out = new LinkedBlockingQueue<Block>();
