@@ -2,10 +2,11 @@ package com.pseuco.project;
 
 import java.util.Collection;
 import java.util.LinkedList;
+
 /**
- * 
  * Entspricht einer Äquivalenzklasse.
- *
+ * Achtung: Äquivalenz entspricht Objektidentität und im Konstruktor übergebene
+ * Collection wird möglicherweise modifiziert
  */
 public class Block {
 
