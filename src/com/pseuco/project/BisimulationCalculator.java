@@ -13,11 +13,19 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class BisimulationCalculator {
 
+	/**
+	 * @return: Die gröbste Partitionierung der Zustände von lts, die eine
+	 *          Bisimulation beschreibt
+	 */
 	public static Partition call(final Lts lts)
 			throws InterruptedException {
 		return new BisimulationCalculator().calculateCoarsestPartition(lts);
 	}
 	
+	/**
+	 * Reiht sich bei ausführung in die Pipeline ein und Spaltet Blöcke bei bei
+	 * der Weitergabe Vorgänger und Nicht-Vorgänger.
+	 */
 	private class SplitTask implements Runnable {
 
 		final Block targetBlock;
@@ -36,8 +44,8 @@ public class BisimulationCalculator {
 						new LinkedBlockingQueue<Block>();
 				outLock.lock();
 				try {
-					myIn = out;
-					out = myOut;
+					myIn = pipelineOutput;
+					pipelineOutput = myOut;
 				} finally {
 					outLock.unlock();
 				}
@@ -85,6 +93,9 @@ public class BisimulationCalculator {
 		}
 	}
 
+	/**
+	 * Beschreibt den Start und die Terminierung eines SplitTask.
+	 */
 	private enum Event {
 		START, TERMINATION
 	}
@@ -93,8 +104,15 @@ public class BisimulationCalculator {
 	private final int NUM_THREADS =
 			Runtime.getRuntime().availableProcessors() + 1;
 	private ExecutorService executor;
-	private BlockingQueue<Block> out;
+	/**
+	 * Verweist zu jedem Zeitpunkt auf das vorübergehende Ende der Pipeline
+	 */
+	private BlockingQueue<Block> pipelineOutput;
 	private final Lock outLock = new ReentrantLock();
+	/**
+	 * Informiert den ausführenden Thread über Start und Terminierung von
+	 * SplitTasks.
+	 */
 	private final BlockingQueue<Event> eventQueue =
 			new LinkedBlockingQueue<Event>();
 	private final ConcurrentHashMap<Block, Boolean> splitBlocks =
@@ -103,12 +121,13 @@ public class BisimulationCalculator {
 	private Lts lts;
 
 
-	public Partition calculateCoarsestPartition(final Lts lts) throws InterruptedException {
+	public Partition calculateCoarsestPartition(final Lts lts)
+			throws InterruptedException {
 		this.lts = lts;
 		executor = Executors.newFixedThreadPool(NUM_THREADS);
-		out = new LinkedBlockingQueue<Block>();
-		out.add(new Block(lts.getStates()));
-		out.add(MARKER);
+		pipelineOutput = new LinkedBlockingQueue<Block>();
+		pipelineOutput.add(new Block(lts.getStates()));
+		pipelineOutput.add(MARKER);
 
 		try {
 			launchSplitJobsOnBlock(new Block(lts.getStates()));
@@ -151,7 +170,7 @@ public class BisimulationCalculator {
 	private Partition outputAsPartition() throws InterruptedException {
 		final Collection<Block> blocks = new LinkedList<Block>();
 		Block block;
-		while ((block = out.take()) != MARKER) {
+		while ((block = pipelineOutput.take()) != MARKER) {
 			blocks.add(block);
 		}
 		return new Partition(blocks);
