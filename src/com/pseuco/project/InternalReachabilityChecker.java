@@ -10,10 +10,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 
- * Sollte nur einmal konstruiert werden. Stellt Zugriff auf τ-Erreichbarkeit in konstanter
- * Zeit zur Verfügung.
- *
+ * Stellt Abfrage auf τ-Erreichbarkeit in konstanter Zeit zur Verfügung.
+ * Vor der ersten Abfrage muss check() aufgerufen werden.
  */
 public class InternalReachabilityChecker {
 
@@ -55,8 +53,9 @@ public class InternalReachabilityChecker {
 	}
 
 	/**
-	 * Berechnet die Erreichbarkeit, damit später in konstanter darauf zugegriffen
-	 * werden kann.
+	 * Berechnet die Erreichbarkeit, damit später in konstanter Zeit darauf
+	 * zugegriffen werden kann.
+	 *
 	 * @throws InterruptedException
 	 */
 	public void check() throws InterruptedException {

@@ -1,8 +1,7 @@
 package com.pseuco.project;
+
 /**
- * 
  * Ist Thread-Safe.
- *
  */
 public class State {
 

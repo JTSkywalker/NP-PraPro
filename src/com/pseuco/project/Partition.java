@@ -3,11 +3,10 @@ package com.pseuco.project;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
 /**
- * 
- * Eine Partition kann als unveränderliche Menge von Äquivalenzklassen einer
- * Bisimulation verwendet werden. Der Zugriff verbraucht benötigt Zeit.
- *
+ * Eine Partition beschreibt die Einteilung der Zustände eines Lts in disjunkte
+ * Blöcke.
  */
 public class Partition {
 

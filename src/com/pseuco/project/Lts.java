@@ -7,16 +7,17 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Stellt ein veränderliches Labelled Transitions System dar ermöglicht die Operationen
- * adddState, addAction und addTransition sowie post(State source, Action a) und
- * pre(State source, Action a) in konstanter Zeit.
- * Ist Thread-Safe.
+ * Stellt ein veränderliches Labelled Transitions System dar ermöglicht die
+ * Operationen adddState, addAction und addTransition sowie post(State source,
+ * Action a) und pre(State source, Action a) in konstanter Zeit. Ist
+ * Thread-Safe.
  */
 public class Lts {
-	
+
 	/*
-	 * Der Datentyp ConcurrentHashMap<T, Boolean> ist ein Workaround für ein in Java nicht
-	 * vorimplementiertes "ConcurrentHashSet<T>": Der Boolean-Wert ist in jedem Fall irrelevant. 
+	 * Der Datentyp ConcurrentHashMap<T, Boolean> ist ein Workaround für ein in
+	 * Java nicht vorimplementiertes "ConcurrentHashSet<T>": Der Boolean-Wert
+	 * ist in jedem Fall irrelevant.
 	 */
 	private final ConcurrentHashMap<State, Boolean> states =
 			new ConcurrentHashMap<State, Boolean>();

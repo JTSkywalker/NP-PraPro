@@ -5,16 +5,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
-/**
- * 
- * Sollte nur einmal konstruiert werden.
- *
- */
+
 public class BisimilarCondensation {
 	/**
-	 * Gibt das LTS zurück, bei dem alle nach partition bisimulativen Zustände jeweils
-	 * zu einem Zustand zusammengefasst sind. 
-	 * Vorraussetzung: Alle Zustände in einem Block von partition sind stark bisimilar.
+	 * Gibt das LTS zurück, bei dem alle nach Blöcke in partition zu jeweils
+	 * einem Zustand zusammengefasst sind, der zu allen Zusänden des Blocks
+	 * stark bisimilar ist. Vorraussetzung: Alle Zustände in einem Block von
+	 * partition sind stark bisimilar.
+	 *
 	 * @param lts
 	 * @param partition
 	 * @return

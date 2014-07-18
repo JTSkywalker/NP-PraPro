@@ -62,8 +62,7 @@ public class BisimulationCalculator {
 			}
 		}
 
-		private void split(final Block block,
-				final Set<State> splitter,
+		private void split(final Block block, final Set<State> splitter,
 				final BlockingQueue<Block> out) throws InterruptedException {
 			final Block subBlock1 = new Block();
 			final Block subBlock2 = new Block();
@@ -113,23 +112,26 @@ public class BisimulationCalculator {
 
 		try {
 			launchSplitJobsOnBlock(new Block(lts.getStates()));
-
-			int activeTaskCount = 0;
-			while (activeTaskCount > 0 || !eventQueue.isEmpty()) {
-				switch (eventQueue.take()) {
-				case START:
-					activeTaskCount++;
-					break;
-				case TERMINATION:
-					activeTaskCount--;
-					break;
-				}
-			}
+			waitForTermination();
 		} finally {
 			executor.shutdownNow();
 		}
 
 		return outputAsPartition();
+	}
+
+	private void waitForTermination() throws InterruptedException {
+		int activeTaskCount = 0;
+		while (activeTaskCount > 0 || !eventQueue.isEmpty()) {
+			switch (eventQueue.take()) {
+			case START:
+				activeTaskCount++;
+				break;
+			case TERMINATION:
+				activeTaskCount--;
+				break;
+			}
+		}
 	}
 
 	private void launchSplitJobsOnBlock(final Block targetBlock)
@@ -146,15 +148,11 @@ public class BisimulationCalculator {
 		executor.execute(task);
 	}
 
-	private Partition outputAsPartition() {
+	private Partition outputAsPartition() throws InterruptedException {
 		final Collection<Block> blocks = new LinkedList<Block>();
 		Block block;
-		try {
-			while ((block = out.take()) != MARKER) {
-				blocks.add(block);
-			}
-		} catch (final InterruptedException e) {
-			e.printStackTrace();
+		while ((block = out.take()) != MARKER) {
+			blocks.add(block);
 		}
 		return new Partition(blocks);
 	}
