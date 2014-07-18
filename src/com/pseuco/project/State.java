@@ -1,5 +1,9 @@
 package com.pseuco.project;
-
+/**
+ * 
+ * Ist Thread-Safe.
+ *
+ */
 public class State {
 
     private final String name;

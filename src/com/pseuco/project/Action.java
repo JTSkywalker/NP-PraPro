@@ -1,7 +1,11 @@
 package com.pseuco.project;
-
+/**
+ * 
+ * Ist Thread-Safe. 
+ *
+ */
 public class Action {
-
+	
 	public static final Action INTERNAL = new Action("τ");
 
     private final String name;
