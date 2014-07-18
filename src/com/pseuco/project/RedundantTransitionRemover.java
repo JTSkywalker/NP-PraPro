@@ -10,16 +10,15 @@ public class RedundantTransitionRemover {
 	public static Lts call(Lts lts) throws InterruptedException {
 		return new RedundantTransitionRemover().calculateMinimum(lts);
 	}
-	
+
 	private class RedundanceChecker implements Runnable {
-		
+
 		public RedundanceChecker(Transition t) {
-			super();
 			this.t = t;
 		}
 
 		final Transition t;
-		
+
 		public boolean isRedundant() {
 			State source = t.getSource();
 			Action label = t.getLabel();
@@ -70,11 +69,12 @@ public class RedundantTransitionRemover {
 	private Lts oldLts, newLts;
 	private final int NUM_THREADS =
 			Runtime.getRuntime().availableProcessors() + 1;
+
 	/**
 	 * @param lts
-	 * @return
-	 * 		lts ohne redundante Transitionen
-	 * @throws InterruptedException 
+	 *            Ein LTS, das jede schwache Transition auch als starke
+	 *            Transition enthält
+	 * @return lts ohne redundante Transitionen
 	 */
 	private Lts calculateMinimum(Lts lts) throws InterruptedException {
 		this.oldLts = lts;

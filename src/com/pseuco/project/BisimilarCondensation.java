@@ -8,14 +8,10 @@ import java.util.Map;
 
 public class BisimilarCondensation {
 	/**
-	 * Gibt das LTS zurück, bei dem alle nach Blöcke in partition zu jeweils
-	 * einem Zustand zusammengefasst sind, der zu allen Zusänden des Blocks
-	 * stark bisimilar ist. Vorraussetzung: Alle Zustände in einem Block von
-	 * partition sind stark bisimilar.
-	 *
-	 * @param lts
-	 * @param partition
-	 * @return
+	 * Gibt das LTS zurück, bei dem alle Blöcke aus partition durch einen
+	 * Zustand repräsentiert sind, der zu allen Zusänden des Blocks stark
+	 * bisimilar ist. Vorraussetzung: Alle Zustände in einem Block von partition
+	 * sind stark bisimilar.
 	 */
 	public static Lts call(Lts lts, Partition partition) {
 		return new BisimilarCondensation().calculate(lts, partition);
@@ -45,7 +41,8 @@ public class BisimilarCondensation {
 		if (blockToStateMap.containsKey(block)) {
 			return;
 		}
-		final State newState = new State(new Integer(stateCounter++).toString());
+		final State newState =
+				new State(new Integer(stateCounter++).toString());
 		states.add(newState);
 		blockToStateMap.put(block, newState);
 		final State representative = block.getStates().iterator().next();
