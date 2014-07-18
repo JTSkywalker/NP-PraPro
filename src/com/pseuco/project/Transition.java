@@ -1,5 +1,7 @@
 package com.pseuco.project;
-
+/**
+ * Ist Thread-Safe.
+ */
 public class Transition {
 
 	private final State source;
