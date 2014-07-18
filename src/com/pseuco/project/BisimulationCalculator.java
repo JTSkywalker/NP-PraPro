@@ -12,7 +12,13 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class BisimulationCalculator {
-
+	/**
+	 * Bestimmt die Äquivalenzklassen der gröbsten Bisimulation zu lts
+	 * als partition.
+	 * @param lts
+	 * @return
+	 * @throws InterruptedException
+	 */
 	public static Partition call(final Lts lts)
 			throws InterruptedException {
 		return new BisimulationCalculator().calculateCoarsestPartition(lts);

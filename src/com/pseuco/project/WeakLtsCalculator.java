@@ -8,7 +8,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class WeakLtsCalculator {
-
+	/**
+	 * Berechnet das schwache LTS zu strongLts, also ein LTS mit den
+	 * gleichen Zuständen und Aktionen und allen schwachen Transitionen
+	 * aus strongLts.
+	 * @param strongLts
+	 * @return
+	 * @throws InterruptedException
+	 */
 	public static Lts call(final Lts strongLts)
 			throws InterruptedException {
 		return new WeakLtsCalculator(strongLts).calculate();

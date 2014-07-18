@@ -6,14 +6,19 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class RedundantTransitionRemover {
-
+	/**
+	 * Entfernt redundante Knoten.
+	 * @param lts
+	 * @return
+	 * @throws InterruptedException
+	 */
 	public static Lts call(Lts lts) throws InterruptedException {
 		return new RedundantTransitionRemover().calculateMinimum(lts);
 	}
 	
-	private class RedundanceChecker implements Runnable {
+	private class RedundancyChecker implements Runnable {
 		
-		public RedundanceChecker(Transition t) {
+		public RedundancyChecker(Transition t) {
 			super();
 			this.t = t;
 		}
@@ -84,7 +89,7 @@ public class RedundantTransitionRemover {
 		final ExecutorService executor = Executors
 				.newFixedThreadPool(NUM_THREADS);
 		for (Transition t : oldLts.getTransitions()) {
-			executor.execute(new RedundanceChecker(t));
+			executor.execute(new RedundancyChecker(t));
 		}
 		executor.shutdown();
 		while (!executor.isTerminated()) {
