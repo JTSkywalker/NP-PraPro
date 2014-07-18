@@ -160,13 +160,11 @@ public class Main {
 
 			// read the input
 			String input = readStandardInput();
-
-			// TODO do the minimization
 			JsonLtsSerializer serializer = new JsonLtsSerializer();
 			LtsMinimizer minimizer = new LtsMinimizer();
-			String output = serializer.serialize(minimizer.minimize(serializer
-					.deserialize(input))); // this may not write to standard
-											// output!
+			Lts bigLts = serializer.deserialize(input);
+			Lts smallLts = minimizer.minimize(bigLts);
+			String output = serializer.serialize(smallLts);
 
 			// output the result on standard output
 			System.out.println(output);
