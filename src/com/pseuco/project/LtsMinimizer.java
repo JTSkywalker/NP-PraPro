@@ -14,6 +14,7 @@ public class LtsMinimizer {
 				.call(weakBisimilarLts);
 		return restoreObservationalCongruence(lts, p, minWeakBisimilarLts);
 	}
+
 	/**
 	 * Stellt die Beobachtungkongruenz wieder her, indem bei Bedarf eine τ-Schleife um den
 	 * Startknoten gesetzt wird.

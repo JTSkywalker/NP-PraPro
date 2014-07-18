@@ -7,10 +7,10 @@ import java.util.concurrent.TimeUnit;
 
 public class RedundantTransitionRemover {
 	/**
-	 * Entfernt redundante Knoten.
 	 * @param lts
-	 * @return
-	 * @throws InterruptedException
+	 *            Ein LTS, das jede schwache Transition auch als starke
+	 *            Transition enthält
+	 * @return lts ohne redundante Transitionen
 	 */
 	public static Lts call(Lts lts) throws InterruptedException {
 		return new RedundantTransitionRemover().calculateMinimum(lts);
