@@ -4,13 +4,19 @@ import java.util.Collections;
 
 public class RedundantTransitionRemover {
 
-	private final Lts oldLts;
-
-	private RedundantTransitionRemover(Lts lts) {
-		this.oldLts = lts;
+	public static Lts call(Lts lts) {
+		return new RedundantTransitionRemover().calculateMinimum(lts);
 	}
+	
+	private Lts oldLts;
 
-	private Lts calculateMinimum() {
+	/**
+	 * @param lts
+	 * @return
+	 * 		lts ohne redundante Transitionen
+	 */
+	private Lts calculateMinimum(Lts lts) {
+		this.oldLts = lts;
 		Lts newLts = new Lts(oldLts.getStates(), oldLts.getActions(),
 				Collections.<Transition> emptySet(), oldLts.getInitialState());
 
@@ -31,6 +37,7 @@ public class RedundantTransitionRemover {
 			if (source.equals(target)) {
 				return true;
 			}
+			//Transition(s,τ,t) redundant .⇔ ∃ r ∈ Post(s,τ), t ≠ r ≠ s Λ t ∈ Post(r,τ)
 			for (State step1 : oldLts.post(source, Action.INTERNAL)) {
 				if (!step1.equals(source) && !step1.equals(target)) {
 					if (oldLts.post(step1, Action.INTERNAL).contains(target)) {
@@ -39,6 +46,8 @@ public class RedundantTransitionRemover {
 				}
 			}
 		} else {
+			//Transition(s,a,t) redundant .⇔ ((∃ r ∈ Post(s,a), r ≠ t .∧ t ∈ Post(r,τ))
+			//								∨ (∃ r ∈ Post(s,τ), r ≠ s .∧ t ∈ Post(r,a)))
 			for (State strongTarget : oldLts.post(source, label)) {
 				if (!strongTarget.equals(target)) {
 					if (oldLts.post(strongTarget, Action.INTERNAL)
@@ -57,9 +66,5 @@ public class RedundantTransitionRemover {
 		}
 
 		return false;
-	}
-
-	public static Lts call(Lts lts) {
-		return new RedundantTransitionRemover(lts).calculateMinimum();
 	}
 }
