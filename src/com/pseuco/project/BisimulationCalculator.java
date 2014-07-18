@@ -1,4 +1,4 @@
-package com.pseuco.project;
+﻿package com.pseuco.project;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -12,7 +12,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class BisimulationCalculator {
-
 	/**
 	 * @return: Die gröbste Partitionierung der Zustände von lts, die eine
 	 *          Bisimulation beschreibt

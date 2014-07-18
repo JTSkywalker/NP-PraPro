@@ -55,7 +55,7 @@ public class DeserializeSerializeTest {
 
 
 	@Test
-	public void testDeserialize() {//TODO repair
+	public void testDeserialize() {
 		try {
 			Scanner scanner = new Scanner(new File("test/SerDeserTestLts.json"));
 			String content = scanner.useDelimiter("\\Z").next();
