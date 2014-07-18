@@ -11,8 +11,13 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class Bisimulation {
+public class BisimulationCalculator {
 
+	public static Partition call(final Lts lts)
+			throws InterruptedException {
+		return new BisimulationCalculator().calculateCoarsestPartition(lts);
+	}
+	
 	private class SplitTask implements Runnable {
 
 		final Block targetBlock;
@@ -88,7 +93,7 @@ public class Bisimulation {
 	private final Block MARKER = Block.EMPTY;
 	private final int NUM_THREADS =
 			Runtime.getRuntime().availableProcessors() + 1;
-	private final ExecutorService executor;
+	private ExecutorService executor;
 	private BlockingQueue<Block> out;
 	private final Lock outLock = new ReentrantLock();
 	private final BlockingQueue<Event> eventQueue =
@@ -96,14 +101,12 @@ public class Bisimulation {
 	private final ConcurrentHashMap<Block, Boolean> splitBlocks =
 			new ConcurrentHashMap<Block, Boolean>();
 
-	private final Lts lts;
+	private Lts lts;
 
-	public Bisimulation(final Lts lts) {
+
+	public Partition calculateCoarsestPartition(final Lts lts) throws InterruptedException {
 		this.lts = lts;
 		executor = Executors.newFixedThreadPool(NUM_THREADS);
-	}
-
-	public Partition calculateCoarsestPartition() throws InterruptedException {
 		out = new LinkedBlockingQueue<Block>();
 		out.add(new Block(lts.getStates()));
 		out.add(MARKER);

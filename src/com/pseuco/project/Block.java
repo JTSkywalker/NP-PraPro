@@ -2,7 +2,11 @@ package com.pseuco.project;
 
 import java.util.Collection;
 import java.util.LinkedList;
-
+/**
+ * 
+ * Entspricht einer Äquivalenzklasse.
+ *
+ */
 public class Block {
 
 	static Block EMPTY = new Block();

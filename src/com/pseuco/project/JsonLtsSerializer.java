@@ -14,7 +14,11 @@ import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
-
+/**
+ * 
+ * Ermöglicht die Deserialisierung und Serialisierung von LTS im pseuCo.com-LTS-JSON-Format.
+ *
+ */
 public class JsonLtsSerializer {
 	public Lts deserialize(String input) {
 		Collection<State> states = new HashSet<>();

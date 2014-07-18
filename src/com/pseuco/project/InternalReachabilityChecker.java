@@ -9,6 +9,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * 
+ * Sollte nur einmal konstruiert werden. Stellt Zugriff auf τ-Erreichbarkeit in konstanter
+ * Zeit zur Verfügung.
+ *
+ */
 public class InternalReachabilityChecker {
 
 	private class FixedSourceReachabilityCheck implements Runnable {
@@ -48,6 +54,11 @@ public class InternalReachabilityChecker {
 		this.lts = lts;
 	}
 
+	/**
+	 * Berechnet die Erreichbarkeit, damit später in konstanter darauf zugegriffen
+	 * werden kann.
+	 * @throws InterruptedException
+	 */
 	public void check() throws InterruptedException {
 		final ExecutorService executor = Executors
 				.newFixedThreadPool(NUM_THREADS);

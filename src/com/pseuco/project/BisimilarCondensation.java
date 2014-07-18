@@ -5,11 +5,26 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
-
+/**
+ * 
+ * Sollte nur einmal konstruiert werden.
+ *
+ */
 public class BisimilarCondensation {
+	/**
+	 * Gibt das LTS zurück, bei dem alle nach partition bisimulativen Zustände jeweils
+	 * zu einem Zustand zusammengefasst sind. 
+	 * Vorraussetzung: Alle Zustände in einem Block von partition sind stark bisimilar.
+	 * @param lts
+	 * @param partition
+	 * @return
+	 */
+	public static Lts call(Lts lts, Partition partition) {
+		return new BisimilarCondensation().calculate(lts, partition);
+	}
 
-	private final Lts weakLts;
-	private final Partition partition;
+	private Lts weakLts;
+	private Partition partition;
 	private int stateCounter = 0;
 	private final Map<Block, State> blockToStateMap =
 			new HashMap<Block, State>();
@@ -17,12 +32,9 @@ public class BisimilarCondensation {
 	private final Collection<Transition> transitions =
 			new HashSet<Transition>();
 
-	private BisimilarCondensation(final Lts weakLts, final Partition partition) {
+	private Lts calculate(final Lts weakLts, final Partition partition) {
 		this.weakLts = weakLts;
 		this.partition = partition;
-	}
-
-	private Lts calculate() {
 		final State originalInitialState = weakLts.getInitialState();
 		final Block initialBlock =
 				partition.getContainingBlock(originalInitialState);
@@ -48,9 +60,4 @@ public class BisimilarCondensation {
 					targetState));
 		}
 	}
-
-	public static Lts call(Lts weakLts, Partition partition) {
-		return new BisimilarCondensation(weakLts, partition).calculate();
-	}
-
 }
